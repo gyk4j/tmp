@@ -1,0 +1,21 @@
+version: "3"
+services:
+  dovecot:
+    image: dovecot/dovecot
+    #command: "useradd -m toc && echo secret | passwd toc --stdin" 
+    restart: no
+    ports:
+      - "110:110"  # POP3
+      #- "995:995"  # POP3 TLS
+      - "143:143"  # IMAP
+      #- "993:993"  # IMAP TLS
+      - "587:587"  # Submission
+      - "24:24"   # LMTP
+      - "4190:4190" # ManageSieve
+    working_dir: /srv/mail
+    volumes:
+      - ./dovecot.conf:/etc/dovecot/dovecot.conf
+      - ./dovecot:/etc/pam.d/dovecot
+      - ./mail:/srv/mail
+      - ./conf.d:/etc/dovecot/conf.d
+      
