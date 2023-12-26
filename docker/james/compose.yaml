@@ -1,0 +1,29 @@
+version: "3"
+services:
+  email:
+    image: apache/james:jpa-latest
+    #command:
+    #  - /bin/sh
+    #  - -c
+    #  - |
+    #    wait-for-it.sh --host=localhost --port=9999 --strict --timeout=0 -- ./initialdata.sh &
+    #    java -Djdk.tls.ephemeralDHKeySize=2048 -classpath '/root/resources:/root/classes:/root/libs/*' -javaagent:/root/libs/openjpa-3.2.0.jar -Dlogback.configurationFile=/root/conf/logback.xml -Dworking.directory=/root/ org.apache.james.JPAJamesServerMain
+    restart: no
+    ports:
+      - "993:993" # IMAP TLS
+      - "465:465" # SMTP
+      - "9999:9999" # James admin port
+    working_dir: /root
+    volumes:
+      - ./wait-for-it.sh:/usr/bin/wait-for-it.sh
+      - ./private.key:/root/conf/private.key
+      - ./private.csr:/root/conf/private.csr
+      - ./initialdata.sh:/root/initialdata.sh
+      - ./imapserver.xml:/root/conf/imapserver.xml
+      - ./smtpserver.xml:/root/conf/smtpserver.xml
+      - ./pop3server.xml:/root/conf/pop3server.xml
+      
+# openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=SG/ST=Singapore/L=Singapore/O=github/CN=gyk4j" -keyout private.key -out private.csr
+
+      
+      
