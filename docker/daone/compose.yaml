@@ -1,0 +1,24 @@
+version: "3"
+services:
+  email:
+    container_name: postfix-dovecot
+    image: daone/postfix-dovecot:latest    
+    restart: no
+    environment:
+      - maildomain=james.local
+    ports:
+      - "993:993" # IMAP TLS
+      - "143:143" # IMAP
+      - "465:465" # SMTP TLS
+      - "25:25"   # SMTP
+    working_dir: /
+    volumes:
+      - ./var/mail:/var/mail
+      - ./home:/home
+      - ./private.csr:/etc/dovecot/dovecot.pem
+      - ./private.key:/etc/dovecot/private/dovecot.pem
+      
+# openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=SG/ST=Singapore/L=Singapore/O=github/CN=gyk4j" -keyout private.key -out private.csr
+
+      
+      
