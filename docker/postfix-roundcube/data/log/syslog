@@ -1,0 +1,17 @@
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd: [origin software="rsyslogd" swVersion="7.4.4" x-pid="659" x-info="http://www.rsyslog.com"] start
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd-2145: activation of module imklog failed [try http://www.rsyslog.com/e/2145 ]
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd: rsyslogd's groupid changed to 104
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd: rsyslogd's userid changed to 101
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd-2039: Could no open output pipe '/dev/xconsole': Permission denied [try http://www.rsyslog.com/e/2039 ]
+Nov 10 02:07:10 bdaf0c77fb25 dovecot: imap-login: Disconnected (auth failed, 1 attempts in 2 secs): user=<toc>, method=PLAIN, rip=127.0.0.1, lip=127.0.0.1, secured, session=<SQ8Vx8IJygB/AAAB>
+Nov 10 02:07:22 bdaf0c77fb25 dovecot: imap-login: Disconnected (auth failed, 1 attempts in 6 secs): user=<toc1>, method=PLAIN, rip=127.0.0.1, lip=127.0.0.1, secured, session=<cP6Nx8IJNAB/AAAB>
+Nov 10 02:07:43 bdaf0c77fb25 dovecot: imap-login: Disconnected (auth failed, 1 attempts in 2 secs): user=<toc2>, method=PLAIN, rip=127.0.0.1, lip=127.0.0.1, secured, session=<EUsGycIJDgB/AAAB>
+Nov 10 02:08:01 bdaf0c77fb25 dovecot: imap-login: Disconnected (auth failed, 1 attempts in 6 secs): user=<toc1@toc.test>, method=PLAIN, rip=127.0.0.1, lip=127.0.0.1, secured, session=<xBDnycIJtgB/AAAB>
+Nov 10 02:21:41 bdaf0c77fb25 dovecot: imap-login: Disconnected (auth failed, 1 attempts in 2 secs): user=<toc1@toc.test>, method=PLAIN, rip=127.0.0.1, lip=127.0.0.1, secured, session=<bRT3+sIJtgB/AAAB>
+Nov 10 02:40:11 bdaf0c77fb25 dovecot: imap-login: Disconnected: Too many invalid commands (no auth attempts in 56 secs): user=<>, rip=172.18.0.1, lip=172.18.0.2, session=<VNNDPcMJVACsEgAB>
+Nov 10 02:41:11 bdaf0c77fb25 dovecot: imap-login: Disconnected (no auth attempts in 0 secs): user=<>, rip=172.18.0.1, lip=172.18.0.2, session=<qiLcQMMJdgCsEgAB>
+Nov 10 02:42:32 bdaf0c77fb25 dovecot: imap-login: Aborted login (auth failed, 3 attempts in 24 secs): user=<toc1@toc.test>, method=PLAIN, rip=172.18.0.1, lip=172.18.0.2, TLS, session=<A9I3RMMJNgCsEgAB>
+Nov 10 02:43:54 bdaf0c77fb25 dovecot: imap-login: Aborted login (auth failed, 3 attempts in 34 secs): user=<toc1>, method=PLAIN, rip=172.18.0.1, lip=172.18.0.2, TLS, session=<F4OFSMMJ5gCsEgAB>
+Nov 10 02:45:23 bdaf0c77fb25 dovecot: imap-login: Aborted login (auth failed, 3 attempts in 20 secs): user=<toc>, method=PLAIN, rip=172.18.0.1, lip=172.18.0.2, TLS, session=<7E6zTsMJBgCsEgAB>
+Nov 10 02:47:44 bdaf0c77fb25 dovecot: imap-login: Aborted login (auth failed, 3 attempts in 101 secs): user=<toc@toc.test>, method=PLAIN, rip=172.18.0.1, lip=172.18.0.2, TLS, session=<459EUsMJOgCsEgAB>

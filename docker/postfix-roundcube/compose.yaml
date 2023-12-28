@@ -1,0 +1,30 @@
+version: "3"
+services:
+  email:
+    container_name: postfix-roundcube
+    image: marooou/postfix-roundcube    
+    restart: no
+    environment:
+      - ADMIN_USERNAME=postmaster
+      - ADMIN_PASSWD=1234
+      - DOMAIN_NAME=toc.test
+      - USERS=toc1:1234,toc2:1234,toc3:1234
+      - USERS_QUOTA=10
+    ports:
+      - "10025:25"  # SMTP
+      - "10180:80"  # HTTP Roundcube
+      - "10110:110" # POP3
+      - "10143:143" # IMAP
+      - "10465:465" # SMTP TLS
+      - "10993:993" # IMAP TLS
+      - "10995:995" # POP3 TLS
+    working_dir: /
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./data/vmail:/var/vmail
+      - ./data/log:/var/log
+      
+# openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=SG/ST=Singapore/L=Singapore/O=github/CN=gyk4j" -keyout private.key -out private.csr
+
+      
+      

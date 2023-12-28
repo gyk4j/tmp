@@ -1,0 +1,1 @@
+Nov 10 02:06:12 bdaf0c77fb25 rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
