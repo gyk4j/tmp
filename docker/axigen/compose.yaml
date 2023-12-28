@@ -1,0 +1,33 @@
+version: "3"
+
+# Docs: https://www.axigen.com/documentation/deploying-running-axigen-in-docker-p686522391
+
+# License type: 	Free Mail Server / Yearly
+# License expiry date: 	November 10, 2024
+#
+# admin:12341234
+# postmaster:12341234
+
+services:
+  email:
+    container_name: axigen
+    image: axigen/axigen
+    restart: no
+    #environment:
+    #  - None
+    ports:
+      - "10025:25"    # SMTP
+      - "10465:465"   # SMTP TLS
+      - "10143:143"   # IMAP
+      - "10993:993"   # IMAP TLS
+      - "10110:110"   # POP3
+      - "10995:995"   # POP3 TLS
+      - "10080:80"    # WEBMAIL
+      - "10443:443"   # WEBMAIL TLS
+      - "19000:9000"  # WebAdmin
+      - "19443:9443"  # WebAdmin TLS
+      - "17000:7000"  # CLI      
+    working_dir: /
+    volumes:
+      - ./var:/axigen/var
+      
