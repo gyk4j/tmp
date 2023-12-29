@@ -1,0 +1,24 @@
+version: "3"
+services:
+  cyrus-postfix:
+    image: cyrus 
+    restart: no
+    ports:
+      - "110:110"  # POP3
+      #- "995:995"  # POP3 TLS
+      - "143:143"  # IMAP
+      #- "993:993"  # IMAP TLS
+      - "587:587"  # Submission
+      - "25:25"   # SMTP
+      - "465:465"
+      - "8008:8008"
+    volumes:
+      - ./logs/imapd.log:/var/log/imapd.log
+      - ./logs/auth.log:/var/log/auth.log
+      - ./cyrus/cyrus.conf:/etc/cyrus.conf
+      - ./cyrus/imapd.conf:/etc/imapd.conf
+      - ./cyrus/syslog.conf:/etc/syslog.conf
+      - ./postfix/main.cf:/etc/postfix/main.cf
+      - ./postfix/aliases:/etc/postfix/aliases
+      - ./postfix/virtual:/etc/postfix/virtual 
+      
