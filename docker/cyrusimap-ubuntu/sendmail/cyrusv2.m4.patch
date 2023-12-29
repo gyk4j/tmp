@@ -1,0 +1,12 @@
+diff --git a/cf/mailer/cyrusv2.m4 b/cf/mailer/cyrusv2.m4
+--- a/cf/mailer/cyrusv2.m4
++++ b/cf/mailer/cyrusv2.m4
+@@ -11,7 +11,7 @@ PUSHDIVERT(-1)
+ #
+
+ _DEFIFNOT(`_DEF_CYRUSV2_MAILER_FLAGS', `lsDFMnqXz')
+-_DEFIFNOT(`CYRUSV2_MAILER_FLAGS', `A@/:|m')
++_DEFIFNOT(`CYRUSV2_MAILER_FLAGS', `8m')
+ ifdef(`CYRUSV2_MAILER_ARGS',, `define(`CYRUSV2_MAILER_ARGS', `FILE /var/imap/socket/lmtp')')
+ define(`_CYRUSV2_QGRP', `ifelse(defn(`CYRUSV2_MAILER_QGRP'),`',`', ` Q=CYRUSV2_MAILER_QGRP,')')dnl
+
