@@ -1,0 +1,21 @@
+version: "3"
+services:
+  greenmail:
+    image: greenmail/standalone:latest 
+    restart: no
+    ports:
+      - '10025:3025' # SMTP
+      - '10110:3110' # POP3
+      - '10143:3143' # IMAP
+      - '10465:3465' # SMTPS
+      - '10993:3993' # IMAPS
+      - '10995:3995' # POP3S
+      - '18080:8080' # GreenMail API
+    environment:
+      GREENMAIL_OPTS: '-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.users=toc:1234@toc.lan,user01:1234@james.local,toc01:1234@toc.test -Dgreenmail.users.login=email -Dgreenmail.preload.dir=/tmp/preload'
+      #-Dgreenmail.auth.disabled 
+    volumes:
+      - './preload:/tmp/preload/'
+      
+      
+      
