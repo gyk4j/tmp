@@ -1,0 +1,4 @@
+AuthInfo:gmail.com "U:username" "P:password" "M:PLAIN"
+AuthInfo: "U:username" "P:Password" "M:PLAIN
+makemap -r hash client-info.db < client-info
+
