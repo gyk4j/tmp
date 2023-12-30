@@ -1,0 +1,121 @@
+From MAILER-DAEMON Thu Nov 16 01:28:40 2023
+AF: 
+NF: 0
+PS: 10
+SRH: 1
+SFN: 
+DSR: 
+MID: 
+CFG: 
+PT: 0
+S: toc@localmail
+RQ: 
+SSV: localhost
+NSV: 
+SSH: 
+R: <toc@localmail>
+MAID: 4
+X-Claws-Privacy-System: 
+X-Claws-Sign: 0
+SCF: #imap/toc@localmail/Sent
+X-Claws-Auto-Wrapping: 1
+X-Claws-Auto-Indent: 1
+X-Claws-End-Special-Headers: 1
+Date: Thu, 16 Nov 2023 09:28:40 +0800
+From: "toc@localmail" <toc@localmail>
+To: toc@localmail
+Subject: Hi There
+Message-ID: <20231116092840.375617dd@laptop>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+Test
+
+From MAILER-DAEMON Thu Nov 16 01:28:58 2023
+AF: 
+NF: 0
+PS: 10
+SRH: 1
+SFN: 
+DSR: 
+MID: <20231116092840.375617dd@laptop>
+CFG: 
+PT: 0
+S: toc@localmail
+RQ: 
+SSV: localhost
+NSV: 
+SSH: 
+R: <toc@localmail>
+MAID: 4
+X-Claws-Privacy-System: 
+X-Claws-Sign: 0
+SCF: #imap/toc@localmail/Sent
+X-Claws-Auto-Wrapping: 1
+X-Claws-Auto-Indent: 1
+X-Claws-End-Special-Headers: 1
+Date: Thu, 16 Nov 2023 09:28:57 +0800
+From: "toc@localmail" <toc@localmail>
+To: toc@localmail
+Subject: Hi There
+Message-ID: <20231116092840.375617dd@laptop>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+Test
+
+From MAILER-DAEMON Thu Nov 16 01:30:47 2023
+AF: 
+NF: 0
+PS: 10
+SRH: 1
+SFN: 
+DSR: 
+MID: <20231116092840.375617dd@laptop>
+CFG: 
+PT: 0
+S: toc@localmail
+RQ: 
+SSV: localhost
+NSV: 
+SSH: 
+R: <toc@localmail>
+MAID: 4
+X-Claws-Privacy-System: 
+X-Claws-Sign: 0
+SCF: #imap/toc@localmail/Sent
+X-Claws-Auto-Wrapping: 1
+X-Claws-Auto-Indent: 1
+X-Claws-End-Special-Headers: 1
+Date: Thu, 16 Nov 2023 09:30:46 +0800
+From: "toc@localmail" <toc@localmail>
+To: toc@localmail
+Subject: Hi There
+Message-ID: <20231116092840.375617dd@laptop>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+Test
+
+From MAILER-DAEMON Thu Nov 16 01:48:47 2023
+Received: Test Server.
+Message-ID: <1905bd33-7e48-4b05-a931-270fb99cadcf@localmail>
+Date: Thu, 16 Nov 2023 09:48:43 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: toc@localmail
+From: "toc@localmail" <toc@localmail>
+Subject: Test
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Test
+
+
