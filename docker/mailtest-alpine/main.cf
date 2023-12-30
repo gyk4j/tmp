@@ -1,0 +1,26 @@
+aillog_file = /dev/stdout
+smtp_helo_name = localhost
+myorigin = localhost
+
+smtpd_banner = $myhostname ESMTP
+biff = no
+append_dot_mydomain = no
+readme_directory = no
+
+compatibility_level = 2
+
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = localhost
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = localhost.localdomain, localhost
+relayhost =
+mynetworks = 127.0.0.0/8 192.168.0.0/16 172.16.0.0/12
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = ipv4
+
