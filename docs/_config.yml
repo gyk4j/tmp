@@ -32,7 +32,8 @@ twitter_username: gyk4j
 github_username:  gyk4j
 
 # Build settings
-theme: minima
+#theme: minima
+theme: just-the-docs
 plugins:
   - jekyll-feed
 
