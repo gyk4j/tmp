@@ -1,5 +1,7 @@
 # README
 
+[![Build](https://github.com/gyk4j/tmp/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/gyk4j/tmp/actions/workflows/pages/pages-build-deployment)
+
 > [!WARNING]
 > This repository is strictly for temporary experimentation and testing.  
 > 
