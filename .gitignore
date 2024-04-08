@@ -2,3 +2,32 @@ go/my-server/my-server
 go/my-server/go.sum
 go/my-server/static/archive.zip
 
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+.pnp
+.pnp.js
+.pnp.cjs
+.pnp.loader.mjs
+
+# testing
+react/my-app/coverage
+
+# production
+react/my-app/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+package-lock.json
+.yarn/
+yarn.lock
