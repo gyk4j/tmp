@@ -31,3 +31,5 @@ yarn-error.log*
 package-lock.json
 .yarn/
 yarn.lock
+.yarnrc.yml
+
