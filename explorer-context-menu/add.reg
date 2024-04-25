@@ -1,0 +1,67 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_create]
+@="Create Skull"
+"Icon"="C:\\m\\mushroom.ico"
+"HasLUAShield"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_create\command]
+@="\"C:\\m\\skull.cmd\" /c \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_retrieve]
+@="Retrieve Skull"
+"Icon"="C:\\m\\diamond.ico"
+"HasLUAShield"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_retrieve\command]
+@="\"C:\\m\\skull.cmd\" /r \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_update]
+@="Update Skull"
+"Icon"="C:\\m\\money.ico"
+"HasLUAShield"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_update\command]
+@="\"C:\\m\\skull.cmd\" /u \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_delete]
+@="Delete Skull"
+"Icon"="C:\\m\\gold.ico"
+"HasLUAShield"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\skull_delete\command]
+@="\"C:\\m\\skull.cmd\" /d \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\*\shell\skull]
+"MUIVerb"="Skull File"
+"Icon"="C:\\m\\skull.ico"
+"SubCommands"="skull_create; skull_retrieve; skull_update; skull_delete"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Directory\shell\skull]
+"MUIVerb"="Skull Directory"
+"Icon"="C:\\m\\skull.ico"
+"SubCommands"="skull_create; skull_retrieve; skull_update; skull_delete"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Directory\Background\shell\skull]
+"MUIVerb"="Skull Directory Background"
+"Icon"="C:\\m\\skull.ico"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Directory\Background\shell\skull\command]
+@="\"C:\\m\\skull.cmd\" /b \"%V\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Drive\shell\skull]
+"MUIVerb"="Skull Drive"
+"Icon"="C:\\m\\skull.ico"
+"SubCommands"="skull_create; skull_retrieve; skull_update; skull_delete"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\LibraryFolder\shell\skull]
+"MUIVerb"="Skull LibraryFolder"
+"Icon"="C:\\m\\skull.ico"
+"SubCommands"="skull_create; skull_retrieve; skull_update; skull_delete"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\LibraryFolder\background\shell\skull]
+"MUIVerb"="Skull LibraryFolder Background"
+"Icon"="C:\\m\\skull.ico"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\LibraryFolder\background\shell\skull\command]
+@="\"C:\\m\\skull.cmd\" /b \"%V\""
