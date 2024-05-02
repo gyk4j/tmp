@@ -33,3 +33,5 @@ package-lock.json
 yarn.lock
 .yarnrc.yml
 
+explorer-context-menu/*.ico
+
