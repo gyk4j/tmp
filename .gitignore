@@ -35,3 +35,7 @@ yarn.lock
 
 explorer-context-menu/*.ico
 
+installer/**/*.exe
+installer/**/*.msi
+
+
