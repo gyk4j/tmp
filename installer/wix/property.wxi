@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!--
+  <Property Id="ARPSYSTEMCOMPONENT" Value="1"/>
+  <Property Id="ARPNOMODIFY" Value="yes" />
+  <Property Id="ARPNOREMOVE" Value="yes" />
+  -->
+  <Property Id="ARPNOREPAIR" Value="yes"/>
+  <Icon Id="uninstall.ico" SourceFile="$(var.APP_UNICON)"/>
+  <Property Id="ARPPRODUCTICON" Value="uninstall.ico"/>
+  <Property Id="ARPHELPLINK" Value="$(var.URL_HELP)"/>
+  <Property Id="ARPURLINFOABOUT" Value="$(var.URL_ABOUT)"/>
+  <Property Id="ARPURLUPDATEINFO" Value="$(var.URL_UPDATE)"/>
+  <Property Id="ARPCOMMENTS" Value="$(var.APP_COMMENTS)"/>
+  <Property Id="ARPCONTACT" Value="$(var.CONTACT)"/>
+  <Property Id="ARPHELPTELEPHONE" Value="$(var.TEL_HELP)"/>
+  <Property Id="ARPREADME" Value="./res/data/FOREWORDS.txt"/>
+</Include> 
