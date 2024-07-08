@@ -8,11 +8,22 @@
     Id="de61293f-90c5-45f5-b15d-4312875ab88f" 
     Name="$(var.APP_NAME)" 
     Language="1033" 
+    Codepage="1252"
     Version="$(var.APP_VER)" 
     Manufacturer="$(var.AUTHOR)" 
     UpgradeCode="344f2a9d-119d-46ca-8269-70da9a5f1142">
     
-    <Package InstallerVersion="200" Compressed="yes"/>
+    <Package 
+      Id="*"
+      Keywords="$(var.PKG_KEYWORDS)"
+      Description="$(var.PKG_DESC)"
+      Comments="$(var.PKG_COMMENTS)"
+      Manufacturer="$(var.AUTHOR)"
+      InstallerVersion="200"
+      Languages='1033'
+      Compressed="yes"
+      SummaryCodepage='1252'
+    />
     
     <Media Id="1" Cabinet="data.cab" EmbedCab="yes"/>
     
