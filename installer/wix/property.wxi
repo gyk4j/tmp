@@ -15,4 +15,5 @@
   <Property Id="ARPCONTACT" Value="$(var.CONTACT)"/>
   <Property Id="ARPHELPTELEPHONE" Value="$(var.TEL_HELP)"/>
   <Property Id="ARPREADME" Value="./res/data/FOREWORDS.txt"/>
+  <Property Id='DiskPrompt' Value="My App 20XX Installation [1]" />
 </Include> 
