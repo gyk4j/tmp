@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include define.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product 
+    Id="de61293f-90c5-45f5-b15d-4312875ab88f" 
+    Name="$(var.APP_NAME)" 
+    Language="1033" 
+    Version="$(var.APP_VER)" 
+    Manufacturer="$(var.AUTHOR)" 
+    UpgradeCode="344f2a9d-119d-46ca-8269-70da9a5f1142">
+    
+    <Package InstallerVersion="200" Compressed="yes"/>
+    
+    <Media Id="1" Cabinet="data.cab" EmbedCab="yes"/>
+    
+    <?include property.wxi ?>
+    
+  </Product>
+    
+</Wix>
