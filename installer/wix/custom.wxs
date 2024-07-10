@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product 
+    Id="de61293f-90c5-45f5-b15d-4312875ab88f" 
+    Name="Custom Dialog" 
+    Language="1033" 
+    Codepage="1252"
+    Version="1.0.0.0" 
+    Manufacturer="Dialog Designer" 
+    UpgradeCode="344f2a9d-119d-46ca-8269-70da9a5f1142">
+    
+    <Package 
+      Id="*"
+      Keywords="Installer"
+      Description="Custom Dialog Installer"
+      Comments="Custom Dialog is a registered trademark of Dialog Designer"
+      Manufacturer="Dialog Designer"
+      InstallerVersion="200"
+      Languages='1033'
+      Compressed="no"
+      SummaryCodepage='1252'
+    />
+    
+    <Media Id="1"/>
+    
+  </Product>
+</Wix>
