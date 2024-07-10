@@ -44,6 +44,11 @@
     
       <Dialog Id="ADlg" Width="370" Height="270" Title="Custom Dialog A">
         <Control Id="Title" Type="Text" X="130" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog A" TabSkip="no" />
+        
+        <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" >
+          <Publish Property="WixUI_InstallMode" Value="Update">Installed AND PATCH</Publish>
+        </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
