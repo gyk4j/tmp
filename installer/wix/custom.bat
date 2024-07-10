@@ -13,12 +13,14 @@ REM del /q build\*.wixobj
 REM del /q build\*.wixpdb
 
 candle ^
+  -nologo ^
   -out .\build\%WIX_PRODUCT%.wixobj ^
   %WIX_PRODUCT%.wxs
   
 if errorlevel 1 goto end
   
 light ^
+  -nologo ^
   -ext WixUIExtension ^
   -out .\build\%WIX_PRODUCT%.msi ^
   .\build\%WIX_PRODUCT%.wixobj

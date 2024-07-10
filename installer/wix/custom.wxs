@@ -26,9 +26,9 @@
     
     <UI Id="CustomDlg">
       <!-- Required to be initialized to settings -->
-      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="9" />
       <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
-      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="10" Bold="yes" />
 
       <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
       <Property Id="WixUI_Mode" Value="Minimal" />
@@ -44,9 +44,13 @@
       
       <Publish Dialog="ADlg" Control="Next" Event="NewDialog" Value="BDlg">NOT Installed</Publish>
       <Publish Dialog="BDlg" Control="Back" Event="NewDialog" Value="ADlg" Order="2">NOT Installed</Publish>
+      
+      <Property Id="OwnerName" Value="default value" />
     
       <Dialog Id="ADlg" Width="370" Height="270" Title="Custom Dialog A">
         <Control Id="Title" Type="Text" X="130" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog A" />
+        
+        <Control Id="OwnerEdit" Type="Edit" X="8" Y="18" Width="225" Height="16" Indirect="no" Property="OwnerName" />
         
         <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" >
@@ -59,6 +63,8 @@
       
       <Dialog Id="BDlg" Width="370" Height="270" Title="Custom Dialog B">
         <Control Id="Title" Type="Text" X="130" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog B" />
+        
+        <Control Id="OwnerText" Type="Text" X="8" Y="18" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="[OwnerName]" />
         
         <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIBack)">
           <Publish Event="NewDialog" Value="ADlg">1</Publish>
