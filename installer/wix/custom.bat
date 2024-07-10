@@ -19,6 +19,7 @@ candle ^
 if errorlevel 1 goto end
   
 light ^
+  -ext WixUIExtension ^
   -out .\build\%WIX_PRODUCT%.msi ^
   .\build\%WIX_PRODUCT%.wixobj
   
