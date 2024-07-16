@@ -53,17 +53,17 @@
       <Property Id="TestListBox" Value="3" />
       <Property Id="TestListView" Value="bravo" />
       
-      <Binary Id="LetterA" SourceFile="lA.ico" />
-      <Binary Id="LetterB" SourceFile="lB.ico" />
-      <Binary Id="LetterC" SourceFile="lC.ico" />
-      <Binary Id="LetterD" SourceFile="lD.ico" />
-      <Binary Id="LetterE" SourceFile="lE.ico" />
+      <Binary Id="LetterA" SourceFile="res/icon/lA.ico" />
+      <Binary Id="LetterB" SourceFile="res/icon/lB.ico" />
+      <Binary Id="LetterC" SourceFile="res/icon/lC.ico" />
+      <Binary Id="LetterD" SourceFile="res/icon/lD.ico" />
+      <Binary Id="LetterE" SourceFile="res/icon/lE.ico" />
       
-      <Binary Id="FlagUK" SourceFile="fuk.ico" />
-      <Binary Id="FlagAU" SourceFile="fau.ico" />
-      <Binary Id="FlagNZ" SourceFile="fnz.ico" />
-      <Binary Id="FlagSG" SourceFile="fsg.ico" />
-      <Binary Id="FlagMY" SourceFile="fmy.ico" />
+      <Binary Id="FlagUK" SourceFile="res/icon/fuk.ico" />
+      <Binary Id="FlagAU" SourceFile="res/icon/fau.ico" />
+      <Binary Id="FlagNZ" SourceFile="res/icon/fnz.ico" />
+      <Binary Id="FlagSG" SourceFile="res/icon/fsg.ico" />
+      <Binary Id="FlagMY" SourceFile="res/icon/fmy.ico" />
     
       <Dialog Id="ADlg" Width="370" Height="270" Title="Custom Dialog A">
         <Control Id="Title" Type="Text" X="8" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog A" />

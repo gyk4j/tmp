@@ -29,14 +29,14 @@
     
     <?include property.wxi ?>
     
-    <Icon Id="Foobar10.exe" SourceFile="FoobarAppl10.exe" />
+    <Icon Id="Foobar10.exe" SourceFile="res/data/FoobarAppl10.exe" />
     
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='ProgramFilesFolder' Name='PFiles'>
         <Directory Id='MyCompany' Name='$(var.AUTHOR)'>
           <Directory Id='INSTALLDIR' Name='$(var.APP_NAME)'>
             <Component Id='MainExecutable' Guid='6d78f495-76d9-4b48-9ea9-32eabe532737'>
-              <File Id='FoobarEXE' Name='FoobarAppl10.exe' DiskId='1' Source='FoobarAppl10.exe' KeyPath='yes'>
+              <File Id='FoobarEXE' Name='FoobarAppl10.exe' DiskId='1' Source='res/data/FoobarAppl10.exe' KeyPath='yes'>
                 <Shortcut Id="startmenuFoobar10" Directory="ProgramMenuDir" Name="$(var.APP_NAME)"
                   WorkingDirectory='INSTALLDIR' Icon="Foobar10.exe" IconIndex="0" Advertise="yes" />
                 <Shortcut Id="desktopFoobar10" Directory="DesktopFolder" Name="$(var.APP_NAME)"
@@ -45,11 +45,11 @@
             </Component>
             
             <Component Id='HelperLibrary' Guid='fea017c2-dff5-4f24-9b1b-deddb1ce56b1'>
-              <File Id='HelperDLL' Name='Helper.dll' DiskId='1' Source='Helper.dll' KeyPath='yes' />
+              <File Id='HelperDLL' Name='Helper.dll' DiskId='1' Source='res/data/Helper.dll' KeyPath='yes' />
             </Component>
 
             <Component Id='Manual' Guid='59ef6fa2-1101-4372-8582-cad2f1881d7f'>
-              <File Id='Manual' Name='Manual.pdf' DiskId='1' Source='Manual.pdf' KeyPath='yes'>
+              <File Id='Manual' Name='Manual.pdf' DiskId='1' Source='res/data/Manual.pdf' KeyPath='yes'>
                 <Shortcut Id='startmenuManual' Directory='ProgramMenuDir' Name='Instruction Manual' Advertise='yes' />
               </File>
             </Component>
