@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?include define.wxi ?>
+<?include include\define.wxi ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
@@ -27,7 +27,7 @@
     
     <Media Id="1" Cabinet="data.cab" EmbedCab="yes" DiskPrompt='CD-ROM #1'/>
     
-    <?include property.wxi ?>
+    <?include include\property.wxi ?>
     
     <Icon Id="Foobar10.exe" SourceFile="res/data/FoobarAppl10.exe" />
     
