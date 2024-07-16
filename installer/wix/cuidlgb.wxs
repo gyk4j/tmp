@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <UI Id="CuiDlgBUI">
+      <Dialog Id="BDlg" Width="370" Height="270" Title="Custom Dialog B">
+        <Control Id="Title" Type="Text" X="8" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog B" />
+        
+        <Control Id="OwnerText" Type="Text" X="8" Y="20" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[OwnerName]" />
+        
+        <Control Id="TestCheckBoxText" Type="Text" X="8" Y="40" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestCheckBox]">
+          <Condition Action="show">
+            <![CDATA[TestCheckBox]]>
+          </Condition>
+        </Control>
+        
+        <Control Id="TestComboBoxText" Type="Text" X="8" Y="60" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestComboBox]" />
+        
+        <Control Id="TestRadioButtonGroupText" Type="Text" X="8" Y="80" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestRadioButtonGroup]" />
+        
+        <Control Id="TestListBoxText" Type="Text" X="8" Y="100" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestListBox]" />
+        
+        <Control Id="TestListViewText" Type="Text" X="8" Y="120" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestListView]" />
+        
+        <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIBack)">
+          <Publish Event="NewDialog" Value="ADlg">1</Publish>
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUINext)" ></Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+        </Control>
+      </Dialog>
+    </UI>
+  </Fragment>
+</Wix>

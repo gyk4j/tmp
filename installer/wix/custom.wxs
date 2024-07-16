@@ -39,121 +39,15 @@
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="UserExit" />
       
+      <!-- Custom dialogs -->
+      <DialogRef Id="ADlg" />
+      <DialogRef Id="BDlg" />
+      
       <!-- Default exit that always exist -->
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
       
       <Publish Dialog="ADlg" Control="Next" Event="NewDialog" Value="BDlg">NOT Installed</Publish>
       <Publish Dialog="BDlg" Control="Back" Event="NewDialog" Value="ADlg" Order="2">NOT Installed</Publish>
-      
-      <Property Id="OwnerName" Value="default value" />
-      <Property Id="TestCheckBox" Admin="yes" /> <!-- Value="1" -->
-      <Property Id="TestComboBox" Value="eg" />
-      <Property Id="TestGroupBox" Value="groupbox" />
-      <Property Id="TestRadioButtonGroup" Value="au" />
-      <Property Id="TestListBox" Value="3" />
-      <Property Id="TestListView" Value="bravo" />
-      
-      <Binary Id="LetterA" SourceFile="res/icon/lA.ico" />
-      <Binary Id="LetterB" SourceFile="res/icon/lB.ico" />
-      <Binary Id="LetterC" SourceFile="res/icon/lC.ico" />
-      <Binary Id="LetterD" SourceFile="res/icon/lD.ico" />
-      <Binary Id="LetterE" SourceFile="res/icon/lE.ico" />
-      
-      <Binary Id="FlagUK" SourceFile="res/icon/fuk.ico" />
-      <Binary Id="FlagAU" SourceFile="res/icon/fau.ico" />
-      <Binary Id="FlagNZ" SourceFile="res/icon/fnz.ico" />
-      <Binary Id="FlagSG" SourceFile="res/icon/fsg.ico" />
-      <Binary Id="FlagMY" SourceFile="res/icon/fmy.ico" />
-    
-      <Dialog Id="ADlg" Width="370" Height="270" Title="Custom Dialog A">
-        <Control Id="Title" Type="Text" X="8" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog A" />
-        
-        <Control Id="OwnerEdit" Type="Edit" X="8" Y="20" Width="128" Height="16" Indirect="no" Property="OwnerName" />
-        
-        <Control Id="TestCheckBox" Type="CheckBox" X="8" Y="40" Width="128" Height="16" Indirect="no" Property="TestCheckBox" Integer="yes" CheckBoxValue="1" Text="A Checkbox" />
-        
-        <Control Id="TestComboBox" Type="ComboBox" X="8" Y="60" Width="128" Height="16" Indirect="no" Property="TestComboBox" Sorted="yes" ComboList="yes">
-          <ComboBox Property="TestComboBox">
-            <ListItem Value="br" Text="Brazil" />
-            <ListItem Value="ru" Text="Russia" />
-            <ListItem Value="in" Text="India" />
-            <ListItem Value="cn" Text="China" />
-            <ListItem Value="sa" Text="South Africa" />
-            <ListItem Value="ir" Text="Iran" />
-            <ListItem Value="eg" Text="Egypt" />
-            <ListItem Value="et" Text="Ethiopia" />
-            <ListItem Value="ae" Text="United Arab Emirates" />
-          </ComboBox>
-        </Control>
-        
-        <Control Id="TestGroupBox" Type="RadioButtonGroup" X="8" Y="80" Width="128" Height="112" Indirect="no" Property="TestRadioButtonGroup" Text="FPDA" HasBorder="yes" Icon="yes">
-          <RadioButtonGroup Property="TestRadioButtonGroup">
-            <RadioButton X="8" Y="16" Width="32" Height="16" Value="uk" Icon="FlagUK" /> <!-- Text="United Kingdom"  -->
-            <RadioButton X="8" Y="32" Width="32" Height="16" Value="au" Icon="FlagAU" /> <!-- Text="Australia"  -->
-            <RadioButton X="8" Y="48" Width="32" Height="16" Value="nz" Icon="FlagNZ" /> <!-- Text="New Zealand" -->
-            <RadioButton X="8" Y="64" Width="32" Height="16" Value="sg" Icon="FlagSG" /> <!-- Text="Singapore"  -->
-            <RadioButton X="8" Y="80" Width="32" Height="16" Value="my" Icon="FlagMY" /> <!-- Text="Malaysia" -->
-          </RadioButtonGroup>
-        </Control>
-        
-        <Control Id="TestHyperlink" Type="Hyperlink" X="144" Y="6" Width="128" Height="16" Transparent="yes" Text="https://www.google.com" />
-        
-        <Control Id="TestListBox" Type="ListBox" X="144" Y="20" Width="128" Height="64" Indirect="no" Property="TestListBox" Integer="yes" Sorted="yes">
-          <ListBox Property="TestListBox">
-            <ListItem Value="1" Text="Poor" />
-            <ListItem Value="2" Text="Fair" />
-            <ListItem Value="3" Text="Average" />
-            <ListItem Value="4" Text="Good" />
-            <ListItem Value="5" Text="Excellent" />
-          </ListBox>
-        </Control>
-        
-        <Control Id="TestListView" Type="ListView" X="144" Y="80" Width="128" Height="112" Indirect="no" Property="TestListView" Sorted="yes">
-          <ListView Property="TestListView">
-            <ListItem Value="alpha" Text="Alpha" Icon="LetterA" />
-            <ListItem Value="bravo" Text="Bravo" Icon="LetterB" />
-            <ListItem Value="charlie" Text="Charlie" Icon="LetterC" />
-            <ListItem Value="delta" Text="Delta" Icon="LetterD" />
-            <ListItem Value="echo" Text="Echo" Icon="LetterE" />
-          </ListView>
-        </Control>
-        
-        <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" >
-          <Publish Event="NewDialog" Value="BDlg">1</Publish>
-        </Control>
-        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
-          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-        </Control>
-      </Dialog>
-      
-      <Dialog Id="BDlg" Width="370" Height="270" Title="Custom Dialog B">
-        <Control Id="Title" Type="Text" X="8" Y="6" Width="225" Height="30" Transparent="yes" NoPrefix="yes" Text="Custom Dialog B" />
-        
-        <Control Id="OwnerText" Type="Text" X="8" Y="20" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[OwnerName]" />
-        
-        <Control Id="TestCheckBoxText" Type="Text" X="8" Y="40" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestCheckBox]">
-          <Condition Action="show">
-            <![CDATA[TestCheckBox]]>
-          </Condition>
-        </Control>
-        
-        <Control Id="TestComboBoxText" Type="Text" X="8" Y="60" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestComboBox]" />
-        
-        <Control Id="TestRadioButtonGroupText" Type="Text" X="8" Y="80" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestRadioButtonGroup]" />
-        
-        <Control Id="TestListBoxText" Type="Text" X="8" Y="100" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestListBox]" />
-        
-        <Control Id="TestListViewText" Type="Text" X="8" Y="120" Width="128" Height="30" Transparent="yes" NoPrefix="yes" Text="[TestListView]" />
-        
-        <Control Id="Back" Type="PushButton" X="156" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIBack)">
-          <Publish Event="NewDialog" Value="ADlg">1</Publish>
-        </Control>
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUINext)" ></Control>
-        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
-          <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
-        </Control>
-      </Dialog>
       
       <InstallUISequence>
         <Show Dialog="ADlg" Before="ProgressDlg">NOT Installed</Show>
