@@ -12,19 +12,18 @@ REM del /q build\*.msi
 REM del /q build\*.wixobj
 REM del /q build\*.wixpdb
 
-candle ^
-  -out .\build\%WIX_PRODUCT%.wixobj ^
-  %WIX_PRODUCT%.wxs
+candle -nologo -out build\ *.wxs
   
 if errorlevel 1 goto end
   
 light ^
+  -nologo  ^
   -cc .\build ^
   -reusecab ^
   -ext WixUIExtension ^
   -ext WixUtilExtension ^
-  -out .\build\%WIX_PRODUCT%.msi ^
-  .\build\%WIX_PRODUCT%.wixobj
+  -out build\%WIX_PRODUCT%.msi ^
+  build\*.wixobj
   
 if errorlevel 1 goto end
   
