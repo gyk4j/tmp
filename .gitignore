@@ -37,6 +37,10 @@ explorer-context-menu/*.ico
 
 installer/**/*.exe
 installer/**/*.msi
-installer/wix/build/**
+installer/wix/**/*.wixobj
+installer/wix/**/*.wixpdb
+installer/wix/**/*.cab
+installer/wix/**/*.msi
+installer/wix/**/build
 
 
