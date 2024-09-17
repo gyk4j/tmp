@@ -45,6 +45,7 @@ installer/wix/**/build
 
 rust/**/*.exe
 rust/**/*.rlib
+rust/**/target/
 
-
+go-set-file-time/*.exe
 
