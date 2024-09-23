@@ -25,7 +25,7 @@ func main(){
   var ll uint64
   ll = uint64(t.Unix() * 10000000) + uint64(116444736000000000)
   ft := windows.Filetime{
-    LowDateTime: uint32(ll & 0b11111111111111111111111111111111),
+    LowDateTime: uint32(ll & (1 << 32 - 1)),
     HighDateTime: uint32(ll >> 32),
   }
   
