@@ -49,9 +49,8 @@ rust/**/target/
 
 go-set-file-time/*.exe
 
-c-set-file-time/*.exe
-c-set-file-time/*.o
-c-set-file-time/*.dev
-c-set-file-time/*.win
-
-
+winapi/*.exe
+winapi/*.o
+winapi/*.dev
+winapi/*.win
+winapi/*.layout
