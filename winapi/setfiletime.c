@@ -75,6 +75,12 @@ int main(int argc, char *argv[])
         lpLastAccessTime,
         lpLastWriteTime
     );
+    
+    err = CloseHandle(hFile);
+    if (err == 0){
+        ErrorExit(TEXT("CloseHandle"));
+    }
+    hFile = INVALID_HANDLE_VALUE;
         
     //printf(" The local time is: %02d:%02d\n", lt.wHour, lt.wMinute);
     
