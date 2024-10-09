@@ -1,0 +1,9 @@
+services:
+  builder:
+    image: builder
+    build: './builder/'
+
+  runner:
+    image: runner
+    build: './runner/'
+    depends_on: [ builder ]
