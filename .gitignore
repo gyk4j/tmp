@@ -49,8 +49,10 @@ rust/**/target/
 
 go-set-file-time/*.exe
 
-winapi/**/*.exe
-winapi/**/*.o
-winapi/**/*.dev
-winapi/**/*.win
-winapi/**/*.layout
+winapi/*.exe
+winapi/*.o
+winapi/*.dev
+winapi/*.win
+winapi/*.layout
+
+docker/.vagrant
