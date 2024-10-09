@@ -54,3 +54,5 @@ winapi/*.o
 winapi/*.dev
 winapi/*.win
 winapi/*.layout
+
+docker/.vagrant
