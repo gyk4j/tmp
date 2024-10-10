@@ -1,6 +1,5 @@
-FROM builder
-RUN /app/main
-
+FROM build-copy-builder AS build
 FROM scratch
-COPY --from=0 /app/main /bin/start
-ENTRYPOINT ["/bin/start"]
+WORKDIR /app
+COPY --from=build /app/main /app/main
+ENTRYPOINT ["/app/main"]
