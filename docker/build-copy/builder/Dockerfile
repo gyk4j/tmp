@@ -1,7 +1,7 @@
-FROM gcc
+FROM golang:alpine
 WORKDIR /app
-COPY main.c .
-RUN gcc -static -o main main.c
+COPY main.go .
+RUN go build main.go
 RUN /app/main
 
 CMD [ "/app/main" ]
