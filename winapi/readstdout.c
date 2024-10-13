@@ -157,10 +157,10 @@ void ErrorExit(LPCTSTR lpszFunction)
     //    LocalSize(lpDisplayBuf) / sizeof(TCHAR),
     //    TEXT("%s failed with error %d: %s"), 
     //    lpszFunction, dw, lpMsgBuf);
-    _snwprintf(
-        (wchar_t*)lpDisplayBuf,
+    _sntprintf(
+        (TCHAR*)lpDisplayBuf,
         LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        L"%s failed with error %d: %s",
+        TEXT("%s failed with error %d: %s"),
         lpszFunction, dw, lpMsgBuf
     );
     MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK); 
