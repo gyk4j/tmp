@@ -23,4 +23,9 @@ func main() {
     fmt.Printf("CUSTOM_VAR_1: %s\n", os.Getenv("CUSTOM_VAR_1"))
     fmt.Printf("CUSTOM_VAR_2: %s\n", os.Getenv("CUSTOM_VAR_2"))
     fmt.Printf("CUSTOM_VAR_3: %s\n", os.Getenv("CUSTOM_VAR_3"))
+    
+    // Variables from service.env
+    fmt.Printf("SERVICE_A: %s\n", os.Getenv("SERVICE_A"))
+    fmt.Printf("SERVICE_B: %s\n", os.Getenv("SERVICE_B"))
+    fmt.Printf("SERVICE_C: %s\n", os.Getenv("SERVICE_C"))
 }
