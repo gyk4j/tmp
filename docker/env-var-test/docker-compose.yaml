@@ -8,4 +8,7 @@ services:
       TERM: ${TERM}
       USER: ${USER}
       HOME: ${HOME}
-      
+      UNKNOWN: ${UNKNOWN}
+      CUSTOM_VAR_1: ${CUSTOM_VAR_1}
+      CUSTOM_VAR_2: ${CUSTOM_VAR_2}
+      CUSTOM_VAR_3: ${CUSTOM_VAR_3}
