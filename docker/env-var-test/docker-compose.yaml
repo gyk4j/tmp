@@ -3,4 +3,9 @@ name: prj
 services:
   svc:
     build: .
-    
+    environment:
+      SHELL: ${SHELL}
+      TERM: ${TERM}
+      USER: ${USER}
+      HOME: ${HOME}
+      
