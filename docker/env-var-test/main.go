@@ -28,4 +28,9 @@ func main() {
     fmt.Printf("SERVICE_A: %s\n", os.Getenv("SERVICE_A"))
     fmt.Printf("SERVICE_B: %s\n", os.Getenv("SERVICE_B"))
     fmt.Printf("SERVICE_C: %s\n", os.Getenv("SERVICE_C"))
+    
+    // Variables from Dockerfile
+    fmt.Printf("DOCKERFILE_VAR_I: %s\n", os.Getenv("DOCKERFILE_VAR_I"))
+    fmt.Printf("DOCKERFILE_VAR_II: %s\n", os.Getenv("DOCKERFILE_VAR_II"))
+    fmt.Printf("DOCKERFILE_VAR_III: %s\n", os.Getenv("DOCKERFILE_VAR_III"))
 }
