@@ -5,10 +5,10 @@ services:
     build: .
     env_file: "service.env"
     environment:
-      SHELL: ${SHELL}
-      TERM: ${TERM}
-      USER: ${USER}
-      HOME: ${HOME}
+      SHELL:  # Inherits shell environment variable value
+      TERM:   # Inherits shell environment variable value
+      USER:   # Inherits shell environment variable value
+      HOME:   # Inherits shell environment variable value
       UNKNOWN: ${UNKNOWN}
       CUSTOM_VAR_1: ${CUSTOM_VAR_1}
       CUSTOM_VAR_2: ${CUSTOM_VAR_2}
