@@ -10,9 +10,9 @@ services:
       USER:   # Inherits shell environment variable value
       HOME:   # Inherits shell environment variable value
       UNKNOWN: ${UNKNOWN}
-      CUSTOM_VAR_1: ${CUSTOM_VAR_1}
-      CUSTOM_VAR_2: ${CUSTOM_VAR_2}
-      CUSTOM_VAR_3: ${CUSTOM_VAR_3}
+      CUSTOM_VAR_1: # Inherits .env variable value
+      CUSTOM_VAR_2: # Inherits .env variable value
+      CUSTOM_VAR_3: # Inherits .env variable value
 # NOTE: SERVICE_A does not need to be specified
 # NOTE: SERVICE_B does not need to be specified
 # NOTE: SERVICE_C does not need to be specified
