@@ -3,6 +3,7 @@ name: prj
 services:
   svc:
     build: .
+    env_file: "service.env"
     environment:
       SHELL: ${SHELL}
       TERM: ${TERM}
@@ -12,3 +13,6 @@ services:
       CUSTOM_VAR_1: ${CUSTOM_VAR_1}
       CUSTOM_VAR_2: ${CUSTOM_VAR_2}
       CUSTOM_VAR_3: ${CUSTOM_VAR_3}
+# NOTE: SERVICE_A does not need to be specified
+# NOTE: SERVICE_B does not need to be specified
+# NOTE: SERVICE_C does not need to be specified     
