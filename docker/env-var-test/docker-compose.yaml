@@ -1,0 +1,6 @@
+name: prj
+
+services:
+  svc:
+    build: .
+    
