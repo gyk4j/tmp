@@ -15,4 +15,7 @@ services:
       CUSTOM_VAR_3: ${CUSTOM_VAR_3}
 # NOTE: SERVICE_A does not need to be specified
 # NOTE: SERVICE_B does not need to be specified
-# NOTE: SERVICE_C does not need to be specified     
+# NOTE: SERVICE_C does not need to be specified
+      DOCKERFILE_VAR_I: Overridden ALPHA
+      DOCKERFILE_VAR_II: Overridden BRAVO
+      DOCKERFILE_VAR_III: Overridden CHARLIE

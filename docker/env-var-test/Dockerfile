@@ -12,4 +12,7 @@ WORKDIR /app
 
 COPY --from=build /app/main /app/main
 
+ENV DOCKERFILE_VAR_I="Docker Alpha"
+ENV DOCKERFILE_VAR_II="Docker Bravo"
+ENV DOCKERFILE_VAR_III="Docker Charlie"
 ENTRYPOINT ["/app/main"]
