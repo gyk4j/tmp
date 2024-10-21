@@ -58,3 +58,4 @@ winapi/**/*.layout
 docker/.vagrant
 
 nanodns/*.exe
+nanodns/build/
