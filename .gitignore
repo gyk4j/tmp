@@ -60,6 +60,6 @@ docker/.vagrant
 nanodns/*.exe
 nanodns/build/
 
-go/wreck/*.exe
-go/wreck/*.dll
+go/wreck/bin/
 go/wreck/test/
+go/wreck/out/
