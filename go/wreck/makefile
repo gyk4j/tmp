@@ -4,11 +4,11 @@ export
 all: clean main test	
 
 main: main.go
-	go build
+	go build -o bin\wreck.exe
 
 test: main
-	wreck.exe test\Wildlife.wmv
+	bin\wreck.exe test\lzma1604.7z
 
 clean:
-	del wreck.exe
+	del bin\wreck.exe
 	go mod tidy
