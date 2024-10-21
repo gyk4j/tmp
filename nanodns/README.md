@@ -1,6 +1,6 @@
 # Build
 
-NanoDNS uses the CMake build system.
+NanoDNS uses the [CMake](https://cmake.org) build system.
 
 In the NanoDNS source directory:
 
@@ -9,13 +9,13 @@ mkdir build
 cd build
 ```
 
-CMake allows the use of various build tools. Common ones include the traditional
-[GNU make](https://www.gnu.org/software/make/), and the newer 
-[Ninja](https://ninja-build.org/).
+[CMake](https://cmake.org) allows the use of various build tools. Common ones 
+include the traditional [GNU make](https://www.gnu.org/software/make/), and 
+the newer [Ninja](https://ninja-build.org/).
 
 ## GNU make
 
-To use makefile:
+To use Unix makefile *(default)*:
 
 ```bat
 cmake ..
@@ -27,8 +27,8 @@ make
 To use MinGW:
 
 ```bat
-cmake "MinGW Makefiles" ..
-make
+cmake -G "MinGW Makefiles" ..
+mingw32-make
 ```
 
 ## Visual Studio
@@ -36,7 +36,7 @@ make
 To use Visual Studio 17 2022:
 
 ```bat
-cmake "Visual Studio 17 2022" -A Win32 ..
+cmake -G "Visual Studio 17 2022" -A Win32 ..
 msbuild
 ```
 
@@ -49,7 +49,9 @@ cmake -G Ninja ..
 ninja
 ```
 
-The built executable binary `nanodns.exe` will be in the build directory.
+The built executable binary `nanodns.exe` will be in the build directory, or
+for multi-configuration build in Visual Studio either in `build\Release` or 
+`build\Debug` sub-directory.
 
 # Run
 
