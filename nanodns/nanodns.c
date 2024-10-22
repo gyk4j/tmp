@@ -7,9 +7,10 @@
 #include <winsock2.h>
 #include <windows.h>
 
-#elif defined __GNUC__
+#else
 
 #include <arpa/inet.h>
+#define SOCKET int
 
 #endif
 
