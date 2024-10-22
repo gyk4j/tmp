@@ -1,9 +1,18 @@
 /*Placed in the public domain by Sam Trenholme*/
-/*NOT WORKING: Ported by gyk4j to build on Windows/Mingw*/
+/*Ported by gyk4j to build on Windows/MinGW*/
 
-//#include <arpa/inet.h>
+#if defined _MSC_VER || defined __MINGW32__
+
+#include <stdio.h>
+#include <winsock2.h>
 #include <windows.h>
-#include <winsock.h>
+
+#elif defined __GNUC__
+
+#include <arpa/inet.h>
+
+#endif
+
 #include <string.h>
 #include <stdint.h>
 typedef int socklen_t;
@@ -21,6 +30,18 @@ int main(int argc, char **argv){
         packet[17]="\xc0\f\0\x01\0\x01\0\0\0\0\0\x04";
     
     if(argc > 1){
+
+        // Initialize Windows Socket
+        // Reference: https://jweinst1.medium.com/how-to-use-udp-sockets-on-windows-29e7e60679fe
+        #if defined _MSC_VER || defined __MINGW32__
+        WSADATA wsaData;
+        int res = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (res != NO_ERROR) {
+            printf("WSAStartup failed with error %d\n", res);
+            return 1;
+        }
+        #endif
+
         // Allocate storage for source address
         struct sockaddr_in from;
         socklen_t fromlen=511;
