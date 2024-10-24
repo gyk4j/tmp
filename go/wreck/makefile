@@ -1,14 +1,18 @@
 include .env
 export
 
-all: clean main test	
+all: go7z mediainfo
 
-main: main.go
-	go build -o bin\wreck.exe
+go7z: cmd\go7z\main.go
+	go build -o bin\go7z.exe .\cmd\go7z
+	bin\go7z.exe test\lzma1604.7z
 
-test: main
-	bin\wreck.exe test\lzma1604.7z
+mediainfo: cmd\mediainfo\main.go
+	go build -o bin\mediainfo.exe .\cmd\mediainfo
+	bin\mediainfo test\Wildlife.wmv
 
 clean:
-	del bin\wreck.exe
+	rd /s /q out
+	del bin\go7z.exe
+	del bin\mediainfo.exe
 	go mod tidy
