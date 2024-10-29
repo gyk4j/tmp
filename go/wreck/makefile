@@ -1,18 +1,18 @@
 include .env
 export
 
-all: go7z mediainfo
+all: goexiftool go7z mediainfo
 
 goexiftool: cmd\goexiftool\main.go
-	go build -o bin\goexiftool.exe .\cmd\goexiftool
-	bin/goexiftool test/Chrysanthemum.jpg
+	go build -o bin\ .\cmd\goexiftool
+	bin\goexiftool test\Chrysanthemum.jpg
 
 go7z: cmd\go7z\main.go
-	go build -o bin\go7z.exe .\cmd\go7z
-	bin\go7z.exe test\lzma1604.7z
+	go build -o bin\ .\cmd\go7z
+	bin\go7z.exe test\Core-15.0.iso
 
 mediainfo: cmd\mediainfo\main.go
-	go build -o bin\mediainfo.exe .\cmd\mediainfo
+	go build -o bin\ .\cmd\mediainfo
 	bin\mediainfo test\Wildlife.wmv
 
 clean:
