@@ -47,7 +47,7 @@ rust/**/*.exe
 rust/**/*.rlib
 rust/**/target/
 
-go/setfiletime/*.exe
+go/filetime/*.exe
 
 winapi/**/*.exe
 winapi/**/*.o
