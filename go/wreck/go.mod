@@ -8,4 +8,4 @@ require (
 	github.com/pkg/errors v0.8.1
 )
 
-require github.com/barasher/go-exiftool v1.10.0 // indirect
+require github.com/barasher/go-exiftool v1.10.0
