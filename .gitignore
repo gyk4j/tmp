@@ -68,3 +68,8 @@ cpp/Client7z/DOC/
 cpp/Client7z/*.o
 cpp/Client7z/*.exe
 cpp/Client7z/build
+
+cpp/MediaInfoDLL/*.o
+cpp/MediaInfoDLL/*.exe
+cpp/MediaInfoDLL/*.dll
+cpp/MediaInfoDLL/*.ogg
