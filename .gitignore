@@ -33,15 +33,15 @@ package-lock.json
 yarn.lock
 .yarnrc.yml
 
-explorer-context-menu/*.ico
+windows/explorer-context-menu/*.ico
 
-installer/**/*.exe
-installer/**/*.msi
-installer/wix/**/*.wixobj
-installer/wix/**/*.wixpdb
-installer/wix/**/*.cab
-installer/wix/**/*.msi
-installer/wix/**/build
+windows/installer/**/*.exe
+windows/installer/**/*.msi
+windows/installer/wix/**/*.wixobj
+windows/installer/wix/**/*.wixpdb
+windows/installer/wix/**/*.cab
+windows/installer/wix/**/*.msi
+windows/installer/wix/**/build
 
 rust/**/*.exe
 rust/**/*.rlib
@@ -49,17 +49,22 @@ rust/**/target/
 
 go/filetime/*.exe
 
-winapi/**/*.exe
-winapi/**/*.o
-winapi/**/*.dev
-winapi/**/*.win
-winapi/**/*.layout
-
 docker/.vagrant
-
-nanodns/*.exe
-nanodns/build/
 
 go/wreck/bin/
 go/wreck/test/
 go/wreck/out/
+
+cpp/winapi/**/*.exe
+cpp/winapi/**/*.o
+cpp/winapi/**/*.dev
+cpp/winapi/**/*.win
+cpp/winapi/**/*.layout
+
+cpp/Client7z/Asm/
+cpp/Client7z/C/
+cpp/Client7z/CPP/
+cpp/Client7z/DOC/
+cpp/Client7z/*.o
+cpp/Client7z/*.exe
+cpp/Client7z/build
