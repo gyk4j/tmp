@@ -74,3 +74,9 @@ cpp/MediaInfoDLL/*.exe
 cpp/MediaInfoDLL/*.dll
 cpp/MediaInfoDLL/*.ogg
 cpp/MediaInfoDLL/build/
+
+cpp/ExifToolWrapper/*.o
+cpp/ExifToolWrapper/*.exe
+cpp/ExifToolWrapper/*.zip
+cpp/ExifToolWrapper/ExifToolWrapper_*
+cpp/ExifToolWrapper/exif-samples-master/
