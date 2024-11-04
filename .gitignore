@@ -80,3 +80,4 @@ cpp/ExifToolWrapper/*.exe
 cpp/ExifToolWrapper/*.zip
 cpp/ExifToolWrapper/ExifToolWrapper_*
 cpp/ExifToolWrapper/exif-samples-master/
+cpp/ExifToolWrapper/build/
