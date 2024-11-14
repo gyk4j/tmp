@@ -58,8 +58,59 @@ namespace ExifToolWrapper
     ExifTool::ExifTool()
     {
         std::cout << "ExifTool()" << std::endl;
-        /*
+        
+        BOOL ok = false;
+        
+        SECURITY_ATTRIBUTES saPipe;  
+        saPipe.nLength = sizeof( SECURITY_ATTRIBUTES );   
+        saPipe.lpSecurityDescriptor = NULL;   
+        saPipe.bInheritHandle = TRUE;
+        
+        HANDLE hReadOutPipe, hWriteOutPipe;
+        ok = CreatePipe(
+            &hReadOutPipe,	// read handle 
+            &hWriteOutPipe,	// write handle, used as stdout by child 
+            &saPipe,		// security descriptor 
+            0 );			// pipe buffer size
+        
+        if ( ! ok )
+            throw CREATE_PIPE_ERROR;
+        
+        HANDLE hReadErrPipe, hWriteErrPipe;
+        ok = CreatePipe(
+            &hReadErrPipe,  // read handle 
+            &hWriteErrPipe, // write handle, used as stdout by child 
+            &saPipe,        // security descriptor 
+            0 );            // pipe buffer size 
+        
+        if ( !ok )
+            throw CREATE_PIPE_ERROR;
+            
+        ok = DuplicateHandle(
+            GetCurrentProcess(),    // source process 
+            hReadOutPipe,           // handle to duplicate
+            GetCurrentProcess(),    // destination process 
+            NULL,                   // new handle - don't want one, change original handle
+            0,                      // new access flags - ignored since DUPLICATE_SAME_ACCESS
+            FALSE,                  // make it *not* inheritable 
+            DUPLICATE_SAME_ACCESS );   
+        
+        if ( ! ok )
+            throw DUPLICATE_HANDLE_ERROR;
+        
         // Prepare process start
+        STARTUPINFO si;  
+        memset( &si, 0, sizeof(si) );   
+        si.cb = sizeof(si);
+        
+        si.hStdInput = hWriteErrPipe; 
+        si.hStdOutput = hWriteOutPipe;  // write end of the pipe 
+        si.hStdError = hWriteErrPipe;   // duplicate of write end of the pipe 
+        
+        si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE;
+        
+        /*
         var psi = new ProcessStartInfo(c_exeName, c_arguments);
         psi.UseShellExecute = false;
         psi.CreateNoWindow = true;
@@ -67,24 +118,37 @@ namespace ExifToolWrapper
         psi.RedirectStandardOutput = true;
         psi.StandardOutputEncoding = s_Utf8NoBOM;
 
-        try
-        {
-            m_exifTool = Process.Start(psi);
-            if (m_exifTool == null || m_exifTool.HasExited)
-            {
-                throw new ApplicationException("Failed to launch ExifTool!");
-            }
-        }
-        catch (System.ComponentModel.Win32Exception err)
-        {
-            throw new ApplicationException("Failed to load ExifTool. 'ExifTool.exe' should be located in the same directory as the application or on the path.", err);
-        }
-
-        // ProcessStartInfo in .NET Framework doesn't have a StandardInputEncoding property (though it does in .NET Core)
-        // So, we have to wrap it this way.
-        m_in = new StreamWriter(m_exifTool.StandardInput.BaseStream, s_Utf8NoBOM);
-        m_out = m_exifTool.StandardOutput;
+        m_exifTool = Process.Start(psi);
         */
+        
+        PROCESS_INFORMATION pi;  
+        char szArgs[256];
+        
+        ok = CreateProcess(
+            NULL,			// filename 
+            szArgs,			// full command line for child 
+            NULL,			// process security descriptor 
+            NULL,			// thread security descriptor 
+            TRUE,			// inherit handles? Also use if STARTF_USESTDHANDLES 
+            0,				// creation flags 
+            NULL,			// inherited environment address 
+            NULL,			// startup dir; NULL = start in current 
+            &si,			// pointer to startup info (input) 
+            &pi );			// pointer to process info (output)
+            
+    	if ( !ok )
+    		throw CREATE_PROCESS_ERROR;
+    	
+        /* Move CloseHandle to Dispose(disposing)?	
+        CloseHandle( pi.hThread );   
+        CloseHandle( pi.hProcess );
+        
+        ok = CloseHandle( hWritePipe );
+        ok = CloseHandle( hWriteErrPipe );
+        */
+
+        m_in = hWriteOutPipe;   //new StreamWriter(m_exifTool.StandardInput.BaseStream, s_Utf8NoBOM);
+        m_out = hReadOutPipe;   //m_exifTool.StandardOutput;
     }
     
     //void ExifTool::GetProperties(string filename, ICollection<KeyValuePair<string, string>> propsRead)

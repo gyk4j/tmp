@@ -43,6 +43,11 @@ For more information, please refer to <http://unlicense.org/>
 
 #include <string>
 #include <tchar.h>
+#include <windows.h>
+
+#define CREATE_PIPE_ERROR -8
+#define DUPLICATE_HANDLE_ERROR -9
+#define CREATE_PROCESS_ERROR -10
 
 namespace ExifToolWrapper
 {
@@ -67,9 +72,9 @@ namespace ExifToolWrapper
             
 //            static Encoding s_Utf8NoBOM = new UTF8Encoding(false);
 //            
-//            Process m_exifTool;
-//            StreamWriter m_in;
-//            StreamReader m_out;
+            HANDLE m_exifTool;
+            HANDLE m_in;
+            HANDLE m_out;
     };
 }
 
