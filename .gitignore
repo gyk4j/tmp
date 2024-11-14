@@ -83,3 +83,6 @@ cpp/ExifToolWrapper/exif-samples-master/
 cpp/ExifToolWrapper/build/
 
 cpp/cpp_exiftool*
+
+cpp/FileMeta/*.exe
+cpp/FileMeta/*.cs
