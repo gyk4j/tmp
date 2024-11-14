@@ -42,6 +42,7 @@ For more information, please refer to <http://unlicense.org/>
 #define _EXIFTOOL_WRAPPER_H
 
 #include <string>
+#include <tchar.h>
 
 namespace ExifToolWrapper
 {
@@ -51,8 +52,8 @@ namespace ExifToolWrapper
             ExifTool();
             ~ExifTool();
             void ExifTool::Dispose();
-//            void GetProperties(string filename, ICollection<KeyValuePair<string, string>> propsRead);
-//            static bool TryParseDate(string s, DateTimeKind kind, out DateTime date);
+//            void GetProperties(string filename, ICollection<KeyValuePair<string, string>> propsRead);            
+            static bool TryParseDate(const TCHAR *s, const LPSYSTEMTIME date);
             
         protected:
             void Dispose(bool disposing);

@@ -40,6 +40,7 @@ For more information, please refer to <http://unlicense.org/>
 //#define EXIF_TRACE
 
 #include <tchar.h>
+#include <ctype.h>
 #include <iostream>
 #include <windows.h>
 #include "ExifToolWrapper.h"
@@ -179,50 +180,119 @@ namespace ExifToolWrapper
         // No garbage collector in C++
     }
     
-    //static bool ExifTool::TryParseDate(string s, DateTimeKind kind, out DateTime date)
-    //{
-        /*
-        date = DateTime.MinValue;
+    bool ExifTool::TryParseDate(const TCHAR *s, const LPSYSTEMTIME date)
+    {
+        date->wDayOfWeek = 2; // Tues for Jan 1, 1980
+        date->wYear = 1980;
+        date->wMonth = 1;
+        date->wDay = 1;
+        date->wHour = 0;
+        date->wMinute = 0;
+        date->wSecond = 0;
+        date->wMilliseconds = 0;
+        
         int year, month, day, hour, minute, second;
-        s = s.Trim();
-        if (!int.TryParse(s.Substring(0, 4), out year)) return false;
-        if (s[4] != ':') return false;
-        if (!int.TryParse(s.Substring(5, 2), out month)) return false;
-        if (s[7] != ':') return false;
-        if (!int.TryParse(s.Substring(8, 2), out day)) return false;
-        if (s[10] != ' ') return false;
-        if (!int.TryParse(s.Substring(11, 2), out hour)) return false;
-        if (s[13] != ':') return false;
-        if (!int.TryParse(s.Substring(14, 2), out minute)) return false;
-        if (s[16] != ':') return false;
-        if (!int.TryParse(s.Substring(17, 2), out second)) return false;
-
+        
+        // Trim s
+        int l, r, start, end;
+        for(l=0 * sizeof(TCHAR); l < _tcslen(s); l += sizeof(TCHAR)){
+            if (!isspace(s[l])){
+                start = l;
+                break;
+            }
+        }
+        
+        for(r=_tcslen(s)-sizeof(TCHAR); r >= 0; r -= sizeof(TCHAR)){
+            if (!isspace(s[r])){
+                end = r;
+                break;
+            }
+        }
+        
+        size_t len = _tcslen(s) * sizeof(TCHAR);
+        TCHAR *t = (TCHAR*) malloc(len);
+        memset(t, 0, len);
+        _tcsncpy(t, &s[l], end - start + 1);
+        
+        _tprintf(" IN: %s (%d)\n", s, _tcslen(s));
+        _tprintf("OUT: %s (%d)\n", t, _tcslen(t));
+        
+        const int DECIMAL = 10;
+        TCHAR *endptr;
+        
+        endptr = &t[4];
+        year = _tcstol(&t[0], &endptr, DECIMAL);
+        if (year == 0) return false;
+        if (t[4] != ':') return false;
+        
+        endptr = &t[7];
+        month = _tcstol(&t[5], &endptr, DECIMAL);
+        if (month == 0) return false;
+        if (t[7] != ':') return false;
+        
+        endptr = &t[10];
+        day = _tcstol(&t[8], &endptr, DECIMAL);
+        if (day == 0) return false;
+        if (t[10] != ' ') return false;
+        
+        endptr = &t[13];
+        hour = _tcstol(&t[11], &endptr, DECIMAL);
+        //if (hour == 0) return false;
+        if (t[13] != ':') return false;
+        
+        endptr = &t[16];
+        minute = _tcstol(&t[14], &endptr, DECIMAL);
+        //if (minute == 0) return false;
+        if (t[16] != ':') return false;
+        
+        endptr = &t[19];
+        second = _tcstol(&t[17], &endptr, DECIMAL);
+        //if (second == 0) return false;
+        
         if (year < 1900 || year > 2200) return false;
         if (month < 1 || month > 12) return false;
         if (day < 1 || day > 31) return false;
         if (hour < 0 || hour > 23) return false;
         if (minute < 0 || minute > 59) return false;
         if (second < 0 || second > 59) return false;
-
-        try
-        {
-            date = new DateTime(year, month, day, hour, minute, second, 0, kind);
-        }
-        catch (Exception)
-        {
-            return false; // Probaby a month with too many days.
-        }
-
+        
+        date->wYear = year;
+        date->wMonth = month;
+        date->wDay = day;
+        date->wHour = hour;
+        date->wMinute = minute;
+        date->wSecond = second;
+        
+        free(t);
+        t = NULL;
+        
         return true;
-        */
-    //}
+    }
 }
+
+void TestParsing();
 
 int main(int argc, char *argv[])
 {
     ExifToolWrapper::ExifTool exifTool;
     std::cout << _T("main()") << std::endl;
+    
+    TestParsing();
+    
+    exifTool.Dispose();
+    system("PAUSE");
     return 0;
+}
+
+void TestParsing()
+{
+    SYSTEMTIME date;
+    bool ok = ExifToolWrapper::ExifTool::TryParseDate(_T("   1819:08:09 12:34:56    "), &date);
+    
+    _tprintf(_T("Status: %s\n"), (ok)? _T("OK"): _T("Error"));
+    _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d\n",
+        date.wYear, date.wMonth, date.wDay,
+        date.wHour, date.wMinute, date.wSecond);
 }
 
 
