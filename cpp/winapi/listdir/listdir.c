@@ -3,15 +3,13 @@
 #include <stdio.h>
 
 void DisplayErrorBox(LPTSTR lpszFunction);
+DWORD Walk(const TCHAR* szDir);
 
 int _tmain(int argc, TCHAR *argv[])
 {
-    WIN32_FIND_DATA ffd;
-    LARGE_INTEGER filesize;
+    
     TCHAR szDir[MAX_PATH];
     size_t length_of_arg;
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-    DWORD dwError=0;
     
     // If the directory is not specified as a command-line argument,
     // print usage.
@@ -38,7 +36,19 @@ int _tmain(int argc, TCHAR *argv[])
     // string to a buffer, then append '\*' to the directory name.
     
     _tcsncpy(szDir, argv[1], MAX_PATH);
-    _tcsncat(szDir, TEXT("\\*"), MAX_PATH);
+    if (szDir[_tcslen(szDir)-sizeof(TCHAR)] != '\\')
+        _tcsncat(szDir, TEXT("\\"), MAX_PATH);
+    _tcsncat(szDir, TEXT("*"), MAX_PATH);
+    
+    return Walk(szDir);
+}
+
+DWORD Walk(const TCHAR* szDir)
+{
+    WIN32_FIND_DATA ffd;
+    LARGE_INTEGER filesize;
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+    DWORD dwError=0;
     
     // Find the first file in the directory.
     
@@ -56,13 +66,28 @@ int _tmain(int argc, TCHAR *argv[])
     {
         if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
         {
-            _tprintf(TEXT("  %s   <DIR>\n"), ffd.cFileName);
+            _tprintf(TEXT("\t[%s]\n"), ffd.cFileName);
+            
+            if (_tcscmp(ffd.cFileName, _TEXT(".")) != 0 &&
+                _tcscmp(ffd.cFileName, _TEXT("..")) != 0) {
+                
+                TCHAR szSubDir[MAX_PATH];
+                memset(szSubDir, 0, MAX_PATH);
+                _tcsncpy(szSubDir, szDir, _tcslen(szDir) - sizeof(TCHAR));
+                _tcsncat(szSubDir, ffd.cFileName, MAX_PATH);
+                _tprintf(TEXT("%s\n"), szSubDir);
+                if (szDir[_tcslen(szSubDir)-sizeof(TCHAR)] != '\\')
+                    _tcsncat(szSubDir, TEXT("\\"), MAX_PATH);
+                _tcsncat(szSubDir, TEXT("*"), MAX_PATH);       
+                
+                Walk(szSubDir);
+            }
         }
         else
         {
             filesize.LowPart = ffd.nFileSizeLow;
             filesize.HighPart = ffd.nFileSizeHigh;
-            _tprintf(TEXT("  %s   %ld bytes\n"), ffd.cFileName, filesize.QuadPart);
+            _tprintf(TEXT("\t%-24s %10ld bytes\n"), ffd.cFileName, filesize.QuadPart);
         }
     }
     while (FindNextFile(hFind, &ffd) != 0);
