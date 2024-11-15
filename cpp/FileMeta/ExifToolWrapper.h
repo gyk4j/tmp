@@ -7,7 +7,7 @@ version: 1.0
 keywords: CodeBit
 dateModified: 2024-11-14
 license: http://unlicense.org
-about: https://sno.phy.queensu.ca/~phil/exiftool/
+about: https://exiftool.org/
 # Metadata in MicroYaml format. See http://filemeta.org/CodeBit.html
 ...
 */
@@ -42,31 +42,50 @@ For more information, please refer to <http://unlicense.org/>
 #define _EXIFTOOL_WRAPPER_H
 
 #include <string>
+#include <vector>
 #include <tchar.h>
 #include <windows.h>
 
-#define CREATE_PIPE_ERROR -8
-#define DUPLICATE_HANDLE_ERROR -9
-#define CREATE_PROCESS_ERROR -10
+#define BUFSIZE 4096 
+
+#define CREATE_PIPE_ERROR               -8
+#define DUPLICATE_HANDLE_ERROR          -9
+#define CREATE_PROCESS_ERROR            -10
+#define SET_HANDLE_INFORMATION_ERROR    -11
+#define CLOSE_HANDLE_ERROR              -12
 
 namespace ExifToolWrapper
 {
+    template <typename K, typename V>
+    class KeyValuePair { 
+        //private:
+        
+        public:
+            K key;
+            V value;
+            KeyValuePair(K k, V v)
+            {
+                key = k;
+                value = v;
+            }
+    };
+    
     class ExifTool
     {
         public:            
             ExifTool();
             ~ExifTool();
             void ExifTool::Dispose();
-//            void GetProperties(string filename, ICollection<KeyValuePair<string, string>> propsRead);            
+            void GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > propsRead);            
             static bool TryParseDate(const TCHAR *s, const LPSYSTEMTIME date);
             
         protected:
             void Dispose(bool disposing);
             
         private:
-            static const std::string c_exeName;
-            static const std::string c_arguments;
-            static const std::string c_exitCommand;
+            static const TCHAR* c_exeName;
+            static const TCHAR* c_arguments;
+            static const TCHAR* c_exitCommand;
             static const int c_timeout;    // in milliseconds
             static const int c_exitTimeout;
             
