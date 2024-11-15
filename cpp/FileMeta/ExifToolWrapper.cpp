@@ -7,7 +7,7 @@ version: 1.0
 keywords: CodeBit
 dateModified: 2024-11-14
 license: http://unlicense.org
-about: https://sno.phy.queensu.ca/~phil/exiftool/
+about: https://exiftool.org/
 # Metadata in MicroYaml format. See http://filemeta.org/CodeBit.html
 ...
 */
@@ -47,9 +47,9 @@ For more information, please refer to <http://unlicense.org/>
 
 namespace ExifToolWrapper
 {
-    const std::string ExifTool::c_exeName = "exiftool.exe";
-    const std::string ExifTool::c_arguments = "-stay_open 1 -@ - -common_args -charset UTF8 -G1 -args";
-    const std::string ExifTool::c_exitCommand = "-stay_open\n0\n-execute\n";
+    const TCHAR* ExifTool::c_exeName = "exiftool.exe";
+    const TCHAR* ExifTool::c_arguments = "-stay_open 1 -@ - -common_args -charset UTF8 -G1 -args";
+    const TCHAR* ExifTool::c_exitCommand = "-stay_open\n0\n-execute\n";
     const int ExifTool::c_timeout = 30000;    // in milliseconds
     const int ExifTool::c_exitTimeout = 15000;
     
@@ -59,128 +59,166 @@ namespace ExifToolWrapper
     {
         std::cout << "ExifTool()" << std::endl;
         
-        BOOL ok = false;
+        SECURITY_ATTRIBUTES saAttr;
         
-        SECURITY_ATTRIBUTES saPipe;  
-        saPipe.nLength = sizeof( SECURITY_ATTRIBUTES );   
-        saPipe.lpSecurityDescriptor = NULL;   
-        saPipe.bInheritHandle = TRUE;
+        // Set the bInheritHandle flag so pipe handles are inherited.
+        saAttr.nLength = sizeof( SECURITY_ATTRIBUTES );   
+        saAttr.bInheritHandle = TRUE;
+        saAttr.lpSecurityDescriptor = NULL;   
         
-        HANDLE hReadOutPipe, hWriteOutPipe;
-        ok = CreatePipe(
-            &hReadOutPipe,	// read handle 
-            &hWriteOutPipe,	// write handle, used as stdout by child 
-            &saPipe,		// security descriptor 
-            0 );			// pipe buffer size
+        HANDLE hInRd, hInWr;
         
-        if ( ! ok )
-            throw CREATE_PIPE_ERROR;
-        
-        HANDLE hReadErrPipe, hWriteErrPipe;
-        ok = CreatePipe(
-            &hReadErrPipe,  // read handle 
-            &hWriteErrPipe, // write handle, used as stdout by child 
-            &saPipe,        // security descriptor 
-            0 );            // pipe buffer size 
-        
-        if ( !ok )
+        // Create a pipe for the child process's STDIN.
+        if ( !CreatePipe( &hInRd, &hInWr, &saAttr, 0 ) )
             throw CREATE_PIPE_ERROR;
             
-        ok = DuplicateHandle(
-            GetCurrentProcess(),    // source process 
-            hReadOutPipe,           // handle to duplicate
-            GetCurrentProcess(),    // destination process 
-            NULL,                   // new handle - don't want one, change original handle
-            0,                      // new access flags - ignored since DUPLICATE_SAME_ACCESS
-            FALSE,                  // make it *not* inheritable 
-            DUPLICATE_SAME_ACCESS );   
+        // Ensure the write handle to the pipe for STDIN is not inherited.
+        if ( !SetHandleInformation(hInWr, HANDLE_FLAG_INHERIT, 0) )
+            throw SET_HANDLE_INFORMATION_ERROR;
         
-        if ( ! ok )
-            throw DUPLICATE_HANDLE_ERROR;
+        HANDLE hOutRd, hOutWr;
         
-        // Prepare process start
-        STARTUPINFO si;  
-        memset( &si, 0, sizeof(si) );   
-        si.cb = sizeof(si);
+        // Create a pipe for the child process's STDOUT.        
+        if ( !CreatePipe( &hOutRd, &hOutWr, &saAttr, 0 ) )
+            throw CREATE_PIPE_ERROR;
         
-        si.hStdInput = hWriteErrPipe; 
-        si.hStdOutput = hWriteOutPipe;  // write end of the pipe 
-        si.hStdError = hWriteErrPipe;   // duplicate of write end of the pipe 
+        // Ensure the read handle to the pipe for STDOUT is not inherited.
+        if ( !SetHandleInformation(hOutRd, HANDLE_FLAG_INHERIT, 0) )
+            throw SET_HANDLE_INFORMATION_ERROR;
         
-        si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
-        si.wShowWindow = SW_HIDE;
+        // void CreateChildProcess()
+        // Create a child process that uses the previously created pipes for STDIN and STDOUT.
         
-        /*
-        var psi = new ProcessStartInfo(c_exeName, c_arguments);
-        psi.UseShellExecute = false;
-        psi.CreateNoWindow = true;
-        psi.RedirectStandardInput = true;
-        psi.RedirectStandardOutput = true;
-        psi.StandardOutputEncoding = s_Utf8NoBOM;
+        TCHAR szCmdline[BUFSIZE];
+        ZeroMemory( szCmdline, BUFSIZE );
+        _tcscpy( szCmdline, c_exeName );
+        _tcscat( szCmdline, TEXT(" ") );
+        _tcscat( szCmdline, c_arguments );
+        
+        PROCESS_INFORMATION piProcInfo; 
+        STARTUPINFO siStartInfo;
+        BOOL bSuccess = FALSE;
+        
+        // Set up members of the PROCESS_INFORMATION structure.
+        
+        ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
+        
+        // Set up members of the STARTUPINFO structure. 
+        // This structure specifies the STDIN and STDOUT handles for redirection.
 
-        m_exifTool = Process.Start(psi);
-        */
+        ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );  
+        siStartInfo.cb = sizeof(STARTUPINFO);
+        siStartInfo.hStdInput = hInRd; 
+        siStartInfo.hStdOutput = hOutWr;
+        siStartInfo.hStdError = hOutWr;
+        siStartInfo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+        siStartInfo.wShowWindow = SW_HIDE;
         
-        PROCESS_INFORMATION pi;  
-        char szArgs[256];
+        // Create the child process.
         
-        ok = CreateProcess(
-            NULL,			// filename 
-            szArgs,			// full command line for child 
-            NULL,			// process security descriptor 
-            NULL,			// thread security descriptor 
-            TRUE,			// inherit handles? Also use if STARTF_USESTDHANDLES 
-            0,				// creation flags 
-            NULL,			// inherited environment address 
-            NULL,			// startup dir; NULL = start in current 
-            &si,			// pointer to startup info (input) 
-            &pi );			// pointer to process info (output)
+        bSuccess = CreateProcess(
+            NULL,           // filename 
+            szCmdline,      // command line 
+            NULL,           // process security attribute 
+            NULL,           // primary thread security attributes 
+            TRUE,           // handles are inherited 
+            0,              // creation flags 
+            NULL,           // use parent's environment
+            NULL,           // use parent's current directory 
+            &siStartInfo,   // STARTUPINFO pointer
+            &piProcInfo);   // receives PROCESS_INFORMATION
             
-    	if ( !ok )
+    	if ( ! bSuccess )
     		throw CREATE_PROCESS_ERROR;
-    	
-        /* Move CloseHandle to Dispose(disposing)?	
-        CloseHandle( pi.hThread );   
-        CloseHandle( pi.hProcess );
-        
-        ok = CloseHandle( hWritePipe );
-        ok = CloseHandle( hWriteErrPipe );
-        */
-
-        m_in = hWriteOutPipe;   //new StreamWriter(m_exifTool.StandardInput.BaseStream, s_Utf8NoBOM);
-        m_out = hReadOutPipe;   //m_exifTool.StandardOutput;
+    	else
+    	{
+            // Close handles to the child process and its primary thread.
+            // Some applications might keep these handles to monitor the status
+            // of the child process, for example.
+            CloseHandle( piProcInfo.hProcess );   
+            CloseHandle( piProcInfo.hThread );
+            
+            // Close handles to the stdin and stdout pipes no longer needed by the child process.
+            // If they are not explicitly closed, there is no way to recognize that the child process has ended.
+            
+            CloseHandle( hOutWr );
+            CloseHandle( hInRd );
+    
+            m_in = hInWr;
+            m_out = hOutRd;
+        }
     }
     
-    //void ExifTool::GetProperties(string filename, ICollection<KeyValuePair<string, string>> propsRead)
-    //{
-        /*
-        m_in.Write(filename);
-        m_in.Write("\n-execute\n");
-        m_in.Flush();
+    void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > propsRead)
+    {
+        DWORD dwRead, dwWritten;
+        BOOL bSuccess = FALSE;
+        TCHAR chBuf[BUFSIZE];
+        HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        
+        dwRead = _tcslen(filename) * sizeof(TCHAR);
+        bSuccess = WriteFile(m_in, filename, dwRead, &dwWritten, NULL);
+        if ( ! bSuccess ) return;
+        
+        dwRead = _tcslen("\n-execute\n") * sizeof(TCHAR);
+        bSuccess = WriteFile(m_in, "\n-execute\n", dwRead, &dwWritten, NULL);
+        if ( ! bSuccess ) return;
+        
+        // Flush???
+            
 #if EXIF_TRACE
         OutputDebugString(_T(filename));
         OutputDebugString(_T("-execute"));
 #endif
+        // Close the pipe handle so the child process stops reading.
+        
+        if ( ! CloseHandle(m_in) )
+            throw CLOSE_HANDLE_ERROR;
+
+        TCHAR line[BUFSIZE];
         for (; ; )
         {
-            var line = m_out.ReadLine();
+            ZeroMemory( line,  BUFSIZE );
+            bSuccess = ReadFile( m_out, line, BUFSIZE, &dwRead, NULL);
+            if( ! bSuccess || dwRead == 0 ) break;
+            
+            // Echo to parent stdout
+            // bSuccess = WriteFile(hParentStdOut, line, dwRead, &dwWritten, NULL);
+            // if (! bSuccess ) break;
 #if EXIF_TRACE
             OutputDebugString(_T(line));
 #endif
-            if (line.StartsWith("{ready")) break;
+            if (_tcsstr(line, "{ready") == &line[0]) break;
             if (line[0] == '-')
             {
-                int eq = line.IndexOf('=');
+                int eq = _tcscspn(line, "=");
                 if (eq > 1)
                 {
-                    string key = line.Substring(1, eq - 1);
-                    string value = line.Substring(eq + 1).Trim();
-                    propsRead.Add(new KeyValuePair<string, string>(key, value));
+                    ZeroMemory( chBuf,  BUFSIZE );
+                    _tcsncpy( chBuf, &line[1], eq - 1 );
+                    std::string key(chBuf);
+                    
+                    ZeroMemory( chBuf,  BUFSIZE );
+                    _tcscpy( chBuf, &line[eq + 1] );
+                    int i;
+                    
+                    // Trim
+                    for(i = BUFSIZE-1; i >= 0; i--){
+                        int isSpace = isspace(chBuf[i]);
+                        if (chBuf[i] != 0 && !isSpace) {
+                            break;
+                        } else if (isSpace) {
+                            chBuf[i] = 0;
+                        }
+                    }
+                    std::string value(chBuf);
+                    
+                    KeyValuePair<std::string, std::string> *kvp = new KeyValuePair<std::string, std::string>(key, value);
+                    propsRead.push_back(*kvp);
                 }
             }
         }
-        */
-    //}
+    }
     
     void ExifTool::Dispose(bool disposing)
     {
