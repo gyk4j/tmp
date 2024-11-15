@@ -88,13 +88,13 @@ namespace ExifToolWrapper
             static const TCHAR* c_exitCommand;
             static const int c_timeout;    // in milliseconds
             static const int c_exitTimeout;
-            
-//            static Encoding s_Utf8NoBOM = new UTF8Encoding(false);
-//            
-            HANDLE m_exifTool;
+                        
+            PROCESS_INFORMATION m_exifTool;
             HANDLE m_in;
             HANDLE m_out;
     };
 }
+
+BOOL GetErrorMessage(DWORD dwErrorCode, LPTSTR pBuffer, DWORD cchBufferLength);
 
 #endif // _EXIFTOOL_WRAPPER_H

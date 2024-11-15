@@ -37,7 +37,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
 */
-//#define EXIF_TRACE
+#define EXIF_TRACE
 
 #include <tchar.h>
 #include <ctype.h>
@@ -135,8 +135,8 @@ namespace ExifToolWrapper
             // Close handles to the child process and its primary thread.
             // Some applications might keep these handles to monitor the status
             // of the child process, for example.
-            CloseHandle( piProcInfo.hProcess );   
-            CloseHandle( piProcInfo.hThread );
+            // CloseHandle( piProcInfo.hProcess );   
+            // CloseHandle( piProcInfo.hThread );
             
             // Close handles to the stdin and stdout pipes no longer needed by the child process.
             // If they are not explicitly closed, there is no way to recognize that the child process has ended.
@@ -146,6 +146,11 @@ namespace ExifToolWrapper
     
             m_in = hInWr;
             m_out = hOutRd;
+            
+            // CreateProcess does not return a Process object like in .NET.
+            // Closest equivalence is the PROCESS_INFORMATION struct.
+            ZeroMemory( &m_exifTool, sizeof(PROCESS_INFORMATION) );
+            memcpy( &m_exifTool, &piProcInfo, sizeof(PROCESS_INFORMATION) );
         }
     }
     
@@ -160,13 +165,17 @@ namespace ExifToolWrapper
         bSuccess = WriteFile(m_in, filename, dwRead, &dwWritten, NULL);
         if ( ! bSuccess ) return;
         
+        FlushFileBuffers(m_in);
+        
         dwRead = _tcslen("\n-execute\n") * sizeof(TCHAR);
         bSuccess = WriteFile(m_in, "\n-execute\n", dwRead, &dwWritten, NULL);
         if ( ! bSuccess ) return;
         
+        FlushFileBuffers(m_in);
+        
         // Flush???
             
-#if EXIF_TRACE
+#ifdef EXIF_TRACE
         OutputDebugString(_T(filename));
         OutputDebugString(_T("-execute"));
 #endif
@@ -185,7 +194,7 @@ namespace ExifToolWrapper
             // Echo to parent stdout
             // bSuccess = WriteFile(hParentStdOut, line, dwRead, &dwWritten, NULL);
             // if (! bSuccess ) break;
-#if EXIF_TRACE
+#ifdef EXIF_TRACE
             OutputDebugString(_T(line));
 #endif
             if (_tcsstr(line, "{ready") == &line[0]) break;
@@ -222,48 +231,95 @@ namespace ExifToolWrapper
     
     void ExifTool::Dispose(bool disposing)
     {
-        std::cout << "Dispose(" << disposing << ")" << std::endl;
-        /*
-        if (m_exifTool != null)
+        DWORD dwRead, dwWritten;
+        BOOL bSuccess = FALSE;
+        TCHAR chBuf[BUFSIZE];
+        
+        std::cout << "hProcess: " << m_exifTool.hProcess << std::endl;
+        if (m_exifTool.hProcess != NULL)
         {
             if (!disposing)
             {
                 OutputDebugString(_T("Failed to dispose ExifTool."));
+                std::cout << "Called from destructor!" << std::endl;
             }
         
             // If process is running, shut it down cleanly
-            if (!m_exifTool.HasExited)
+            DWORD dwExitCode;
+            
+            bSuccess = GetExitCodeProcess( m_exifTool.hProcess, &dwExitCode );
+            std::cout << "GetExitCodeProcess: " << bSuccess << ", Exit Code: " << dwExitCode << std::endl;
+            if ( bSuccess && dwExitCode == STILL_ACTIVE )
             {
-                m_in.Write(c_exitCommand);
-                m_in.Flush();
+                std::cout << "exiftool is STILL ACTIVE" << std::endl;
+                
+                dwRead = _tcslen(c_exitCommand) * sizeof(TCHAR);
+                bSuccess = WriteFile(m_in, c_exitCommand, dwRead, &dwWritten, NULL);
+                if ( ! bSuccess ) return;
+                
+                FlushFileBuffers(m_in);
         
-                if (!m_exifTool.WaitForExit(c_exitTimeout))
+                bSuccess = TerminateProcess( m_exifTool.hProcess, 0 );
+                
+                OutputDebugString(_T("TerminateProcess"));
+                std::cout << "TerminateProcess: " << bSuccess << std::endl;
+                
+                dwExitCode = WaitForSingleObject( m_exifTool.hProcess, c_exitTimeout );
+                
+                if (dwExitCode == WAIT_TIMEOUT)
                 {
-                    m_exifTool.Kill();
+                    bSuccess = TerminateProcess( m_exifTool.hProcess, 0 );
                     OutputDebugString(_T("Timed out waiting for exiftool to exit."));
+                    std::cout << "WAIT_TIMEOUT: " << bSuccess << std::endl;
                 }
-                #if EXIF_TRACE
-                else
+                else if (dwExitCode == WAIT_FAILED)
+                {
+                    OutputDebugString(_T("ExifTool terminate wait failed."));
+                    std::cout << "WAIT_FAILED" << std::endl;
+                }
+                else if (dwExitCode == WAIT_ABANDONED)
+                {
+                    OutputDebugString(_T("ExifTool terminate wait abandoned."));
+                    std::cout << "WAIT_ABANDONED" << std::endl;
+                }
+                #ifdef EXIF_TRACE
+                else if (dwExitCode == WAIT_OBJECT_0)
                 {
                     OutputDebugString(_T("ExifTool exited cleanly."));
+                    std::cout << "WAIT_OBJECT_0" << std::endl;
                 }
                 #endif
+                else
+                {
+                    OutputDebugString(_T("ExifTool terminate unknown status."));
+                    std::cout << "WAIT_UNKNOWN" << std::endl;
+                }
+            } else {
+                DWORD err = GetLastError();
+                ZeroMemory( chBuf,  BUFSIZE );
+                GetErrorMessage( err, chBuf,  BUFSIZE );
+                std::cout << std::string(chBuf) << std::endl;
             }
         
-            if (m_out != null)
+            if (m_out != NULL)
             {
-                m_out.Dispose();
-                m_out = null;
+                CloseHandle(m_out);
+                m_out = NULL;
+                std::cout << "Closed m_out" << std::endl;
             }
-            if (m_in != null)
+            if (m_in != NULL)
             {
-                m_in.Dispose();
-                m_in = null;
+                CloseHandle(m_in);
+                m_in = NULL;
+                std::cout << "Closed m_in" << std::endl;
             }
-            m_exifTool.Dispose();
-            m_exifTool = null;
+            
+            CloseHandle( m_exifTool.hProcess );
+            CloseHandle( m_exifTool.hThread );
+            
+            ZeroMemory( &m_exifTool, sizeof(PROCESS_INFORMATION) );
+            std::cout << "After ZeroMemory( m_exifTool )" << std::endl;
         }
-        */
     }
     
     ExifTool::~ExifTool()
@@ -372,18 +428,67 @@ namespace ExifToolWrapper
     }
 }
 
+BOOL GetErrorMessage(DWORD dwErrorCode, LPTSTR pBuffer, DWORD cchBufferLength)
+{
+    if (cchBufferLength == 0)
+    {
+    return FALSE;
+    }
+    
+    DWORD cchMsg = FormatMessage(
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,  /* (not used with FORMAT_MESSAGE_FROM_SYSTEM) */
+        dwErrorCode,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        pBuffer,
+        cchBufferLength,
+        NULL);
+        
+    return (cchMsg > 0);
+}
+
 void TestParsing();
 
 int main(int argc, char *argv[])
 {
-    ExifToolWrapper::ExifTool exifTool;
-    std::cout << _T("main()") << std::endl;
+    int exitCode = 0;
     
-    TestParsing();
+    try
+    {
+        ExifToolWrapper::ExifTool exifTool;
+        std::cout << _T("main()") << std::endl;
+        
+        //TestParsing();
+        Sleep(5000);
+        
+        exifTool.Dispose();
+    } catch(int exception) {
+        switch (exception)
+        {
+            case CREATE_PIPE_ERROR:
+                std::cerr << _T("CREATE_PIPE_ERROR") << std::endl;
+                break;
+            case DUPLICATE_HANDLE_ERROR:
+                std::cerr << _T("DUPLICATE_HANDLE_ERROR") << std::endl;
+                break;
+            case CREATE_PROCESS_ERROR:
+                std::cerr << _T("CREATE_PROCESS_ERROR") << std::endl;
+                break;
+            case SET_HANDLE_INFORMATION_ERROR:
+                std::cerr << _T("SET_HANDLE_INFORMATION_ERROR") << std::endl;
+                break;
+            case CLOSE_HANDLE_ERROR:
+                std::cerr << _T("CLOSE_HANDLE_ERROR") << std::endl;
+                break;
+            default:
+                std::cerr << _T("An unknown exception occurred.") << std::endl;
+                break;
+        }
+        
+        exitCode = exception;
+    }
     
-    exifTool.Dispose();
-    system("PAUSE");
-    return 0;
+    return exitCode;
 }
 
 void TestParsing()
