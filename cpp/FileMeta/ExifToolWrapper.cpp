@@ -196,7 +196,7 @@ namespace ExifToolWrapper
                 {
                     ZeroMemory( chBuf,  BUFSIZE );
                     _tcsncpy( chBuf, &line[1], eq - 1 );
-                    std::string key(chBuf);
+                    std::string *key = new std::string(chBuf);
                     
                     ZeroMemory( chBuf,  BUFSIZE );
                     _tcscpy( chBuf, &line[eq + 1] );
@@ -211,9 +211,9 @@ namespace ExifToolWrapper
                             chBuf[i] = 0;
                         }
                     }
-                    std::string value(chBuf);
+                    std::string *value = new std::string(chBuf);
                     
-                    KeyValuePair<std::string, std::string> *kvp = new KeyValuePair<std::string, std::string>(key, value);
+                    KeyValuePair<std::string, std::string> *kvp = new KeyValuePair<std::string, std::string>(*key, *value);
                     propsRead.push_back(*kvp);
                 }
             }
