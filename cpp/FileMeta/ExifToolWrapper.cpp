@@ -258,13 +258,12 @@ namespace ExifToolWrapper
                 if ( ! bSuccess ) return;
                 
                 FlushFileBuffers(m_in);
-        
-                bSuccess = TerminateProcess( m_exifTool.hProcess, 0 );
                 
-                OutputDebugString(_T("TerminateProcess"));
-                std::cout << "TerminateProcess: " << bSuccess << std::endl;
+                std::cout << "Waiting for exit..." << std::endl;
                 
                 dwExitCode = WaitForSingleObject( m_exifTool.hProcess, c_exitTimeout );
+                
+                std::cout << "exiftool process has exited." << std::endl;
                 
                 if (dwExitCode == WAIT_TIMEOUT)
                 {
