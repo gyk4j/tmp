@@ -93,8 +93,8 @@ namespace ExifToolWrapper
             HANDLE m_in;
             HANDLE m_out;
     };
+    
+    BOOL GetErrorMessage(DWORD dwErrorCode, LPTSTR pBuffer, DWORD cchBufferLength);
 }
-
-BOOL GetErrorMessage(DWORD dwErrorCode, LPTSTR pBuffer, DWORD cchBufferLength);
 
 #endif // _EXIFTOOL_WRAPPER_H
