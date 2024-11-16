@@ -86,3 +86,5 @@ cpp/cpp_exiftool*
 
 cpp/FileMeta/*.exe
 cpp/FileMeta/*.cs
+cpp/FileMeta/*.jpg
+cpp/FileMeta/exif-samples-master/
