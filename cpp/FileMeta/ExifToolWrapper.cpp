@@ -430,7 +430,7 @@ namespace ExifToolWrapper
     {
         if (cchBufferLength == 0)
         {
-        return FALSE;
+            return FALSE;
         }
         
         DWORD cchMsg = FormatMessage(
