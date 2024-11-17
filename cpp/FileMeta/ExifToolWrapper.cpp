@@ -222,7 +222,8 @@ namespace ExifToolWrapper
                     }
                     std::string *value = new std::string(chBuf);
                     
-                    KeyValuePair<std::string, std::string> *kvp = new KeyValuePair<std::string, std::string>(*key, *value);
+                    KeyValuePair<std::string, std::string> *kvp = 
+                        new KeyValuePair<std::string, std::string>(*key, *value);
                     propsRead.push_back(*kvp);
                 }
             }
