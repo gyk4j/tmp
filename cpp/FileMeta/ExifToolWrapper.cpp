@@ -131,19 +131,7 @@ namespace ExifToolWrapper
     	if ( ! bSuccess )
     		throw CREATE_PROCESS_ERROR;
     	else
-    	{
-            // Close handles to the child process and its primary thread.
-            // Some applications might keep these handles to monitor the status
-            // of the child process, for example.
-            // CloseHandle( piProcInfo.hProcess );   
-            // CloseHandle( piProcInfo.hThread );
-            
-            // Close handles to the stdin and stdout pipes no longer needed by the child process.
-            // If they are not explicitly closed, there is no way to recognize that the child process has ended.
-            
-            CloseHandle( hOutWr );
-            CloseHandle( hInRd );
-    
+    	{    
             m_in = hInWr;
             m_out = hOutRd;
             
@@ -152,6 +140,18 @@ namespace ExifToolWrapper
             ZeroMemory( &m_exifTool, sizeof(PROCESS_INFORMATION) );
             memcpy( &m_exifTool, &piProcInfo, sizeof(PROCESS_INFORMATION) );
         }
+        
+        // Close handles to the child process and its primary thread.
+        // Some applications might keep these handles to monitor the status
+        // of the child process, for example.
+        // CloseHandle( piProcInfo.hProcess );   
+        // CloseHandle( piProcInfo.hThread );
+        
+        // Close handles to the stdin and stdout pipes no longer needed by the child process.
+        // If they are not explicitly closed, there is no way to recognize that the child process has ended.
+        
+        CloseHandle( hOutWr );
+        CloseHandle( hInRd );
     }
     
     void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > propsRead)
