@@ -57,16 +57,14 @@ For more information, please refer to <http://unlicense.org/>
 namespace ExifToolWrapper
 {
     template <typename K, typename V>
-    class KeyValuePair { 
-        //private:
-        
+    struct KeyValuePair {
         public:
-            K key;
-            V value;
+            K Key;
+            V Value;
             KeyValuePair(K k, V v)
             {
-                key = k;
-                value = v;
+                Key = k;
+                Value = v;
             }
     };
     
