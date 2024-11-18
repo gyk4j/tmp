@@ -458,6 +458,7 @@ namespace ExifToolWrapper
 
 void TestParsing();
 void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool );
+void DumpProps( const std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > &props );
 
 int main(int argc, char *argv[])
 {
@@ -515,10 +516,21 @@ void TestParsing()
 void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool )
 {
     std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > props;
-    exifTool.GetProperties( _T("Canon_40D.jpg"), props );
     
+    exifTool.GetProperties( _T("Canon_40D.jpg"), props );
+    DumpProps( props );
+    props.clear();
+    
+    exifTool.GetProperties( _T("Fujifilm_FinePix_E500.jpg"), props );
+    DumpProps( props );
+    props.clear();
+    
+}
+
+void DumpProps( const std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > &props )
+{
     for (
-        std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> >::iterator it = props.begin();
+        std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> >::const_iterator it = props.begin();
         it != props.end() ;
         ++it) {
         
