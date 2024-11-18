@@ -154,7 +154,7 @@ namespace ExifToolWrapper
         CloseHandle( hInRd );
     }
     
-    void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > propsRead)
+    void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > &propsRead) const
     {
         DWORD dwRead, dwWritten;
         BOOL bSuccess = FALSE;
@@ -172,8 +172,6 @@ namespace ExifToolWrapper
         if ( ! bSuccess ) return;
         
         FlushFileBuffers(m_in);
-        
-        // Flush???
             
 #ifdef EXIF_TRACE
         OutputDebugString(_T(filename));
@@ -181,23 +179,40 @@ namespace ExifToolWrapper
 #endif
         // Close the pipe handle so the child process stops reading.
         
-        if ( ! CloseHandle(m_in) )
-            throw CLOSE_HANDLE_ERROR;
+        //if ( ! CloseHandle(m_in) )
+        //    throw CLOSE_HANDLE_ERROR;
 
         TCHAR line[BUFSIZE];
+        int i = 0;
+
         for (; ; )
         {
             ZeroMemory( line,  BUFSIZE );
-            bSuccess = ReadFile( m_out, line, BUFSIZE, &dwRead, NULL);
-            if( ! bSuccess || dwRead == 0 ) break;
+            do
+            {
+                bSuccess = ReadFile( m_out, &line[i], sizeof(_TCHAR), &dwRead, NULL );
+                
+                if( ! bSuccess || dwRead == 0 || line[i] == '\n' ){
+                    // Split output and process each line.
+                    line[i] = 0;
+                    i = 0;
+                    break;
+                } else if( line[i] == '\r' ) {
+                    // Newline in Windows has 2 characters \r\n, unlike 
+                    // Unix/Linux. So we need to replace with a null terminator 
+                    // to ensure string functions work properly.
+                    line[i] = 0;
+                } else {
+                    i += sizeof(_TCHAR);
+                } 
+            } while( bSuccess && dwRead > 0 );
             
-            // Echo to parent stdout
-            // bSuccess = WriteFile(hParentStdOut, line, dwRead, &dwWritten, NULL);
-            // if (! bSuccess ) break;
 #ifdef EXIF_TRACE
             OutputDebugString(_T(line));
+            //std::cout << std::string(line) << std::endl;
 #endif
-            if (_tcsstr(line, "{ready") == &line[0]) break;
+
+            if (_tcscmp(line, "{ready}") == 0) break;
             if (line[0] == '-')
             {
                 int eq = _tcscspn(line, "=");
@@ -205,26 +220,20 @@ namespace ExifToolWrapper
                 {
                     ZeroMemory( chBuf,  BUFSIZE );
                     _tcsncpy( chBuf, &line[1], eq - 1 );
-                    std::string *key = new std::string(chBuf);
+                    std::string key(chBuf);
                     
                     ZeroMemory( chBuf,  BUFSIZE );
                     _tcscpy( chBuf, &line[eq + 1] );
-                    int i;
                     
                     // Trim
-                    for(i = BUFSIZE-1; i >= 0; i--){
-                        int isSpace = isspace(chBuf[i]);
-                        if (chBuf[i] != 0 && !isSpace) {
-                            break;
-                        } else if (isSpace) {
-                            chBuf[i] = 0;
-                        }
-                    }
-                    std::string *value = new std::string(chBuf);
-                    
+                    std::string value(chBuf);
+                    /*
                     KeyValuePair<std::string, std::string> *kvp = 
-                        new KeyValuePair<std::string, std::string>(*key, *value);
+                        new KeyValuePair<std::string, std::string>(key, value);
                     propsRead.push_back(*kvp);
+                    */
+                    KeyValuePair<std::string, std::string> kvp(key, value);
+                    propsRead.push_back(kvp);
                 }
             }
         }
@@ -448,6 +457,7 @@ namespace ExifToolWrapper
 }
 
 void TestParsing();
+void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool );
 
 int main(int argc, char *argv[])
 {
@@ -459,7 +469,7 @@ int main(int argc, char *argv[])
         std::cout << _T("main()") << std::endl;
         
         //TestParsing();
-        Sleep(5000);
+        TestGetProperties( exifTool );
         
         exifTool.Dispose();
     } catch(int exception) {
@@ -502,6 +512,19 @@ void TestParsing()
         date.wHour, date.wMinute, date.wSecond);
 }
 
+void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool )
+{
+    std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > props;
+    exifTool.GetProperties( _T("Canon_40D.jpg"), props );
+    
+    for (
+        std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> >::iterator it = props.begin();
+        it != props.end() ;
+        ++it) {
+        
+        std::cout << it->Key << " = " << it->Value << std::endl;
+    }
+}
 
 
 
