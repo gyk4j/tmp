@@ -37,7 +37,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
 */
-#define EXIF_TRACE
+//#define EXIF_TRACE
 
 #include <tchar.h>
 #include <ctype.h>
@@ -57,7 +57,9 @@ namespace ExifToolWrapper
     
     ExifTool::ExifTool()
     {
+#ifdef EXIF_TRACE
         std::cout << "ExifTool()" << std::endl;
+#endif
         
         SECURITY_ATTRIBUTES saAttr;
         
@@ -156,7 +158,7 @@ namespace ExifToolWrapper
     
     void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > &propsRead) const
     {
-        DWORD dwRead, dwWritten;
+        DWORD dwRead = 0, dwWritten = 0;
         BOOL bSuccess = FALSE;
         TCHAR chBuf[BUFSIZE];
         HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -181,35 +183,91 @@ namespace ExifToolWrapper
         
         //if ( ! CloseHandle(m_in) )
         //    throw CLOSE_HANDLE_ERROR;
+        
+        int bi = 0;
 
         TCHAR line[BUFSIZE];
-        int i = 0;
+        int li = 0;
+
+        // Read first block
+        ZeroMemory( chBuf, BUFSIZE );
+        bSuccess = ReadFile( m_out, chBuf, BUFSIZE, &dwRead, NULL );
+
+#ifdef EXIF_TRACE
+        std::cout << "--- First block: dwRead = " << dwRead << std::endl;
+        
+        // once a new block has been read, reset block index.
+        if ( bSuccess && dwRead > 0 ) {
+            LPCSTR isFullBlock = (dwRead == BUFSIZE) ? _T("Yes"): _T("No");
+            std::cout << "Full block: " << std::string(isFullBlock) << std::endl;
+        } else {
+            // Failed to read anything for further processing.
+            std::cout << "Failed to read first block." << std::endl;
+        }
+#endif
+        
+        if ( !bSuccess || dwRead == 0 )
+            return;
 
         for (; ; )
         {
+            // Prepare to extract a line.
             ZeroMemory( line,  BUFSIZE );
-            do
+            for (int li = 0; li < BUFSIZE && bi < dwRead; li++, bi++)
             {
-                bSuccess = ReadFile( m_out, &line[i], sizeof(_TCHAR), &dwRead, NULL );
-                
-                if( ! bSuccess || dwRead == 0 || line[i] == '\n' ){
-                    // Split output and process each line.
-                    line[i] = 0;
-                    i = 0;
+                if ( chBuf[bi] == '\0' ) {
+                    line[li] = '\0';
+                    ++bi;
                     break;
-                } else if( line[i] == '\r' ) {
+                } else if( chBuf[bi] == '\n' ){                    
+                    // Exit without filling up the entire line buffer.
+                    line[li] = 0;
+                    ++bi;
+                    break;
+                } else if( chBuf[bi] == '\r' ) {
                     // Newline in Windows has 2 characters \r\n, unlike 
                     // Unix/Linux. So we need to replace with a null terminator 
                     // to ensure string functions work properly.
-                    line[i] = 0;
+                    line[li] = 0;
                 } else {
-                    i += sizeof(_TCHAR);
-                } 
-            } while( bSuccess && dwRead > 0 );
+                    // Copy any other characters to line buffer.
+                    line[li] = chBuf[bi];
+                }
+                
+                // Have we reached the last byte/character of block?
+                if ( bi == dwRead-1 )
+                {
+                    // Read next block
+                    ZeroMemory( chBuf, BUFSIZE );
+                    bSuccess = ReadFile( m_out, chBuf, BUFSIZE, &dwRead, NULL );
+#ifdef EXIF_TRACE
+                    std::cout << "--- Next block: dwRead = " << dwRead << std::endl;
+                    
+                    // once a new block has been read, reset block index.
+                    if ( bSuccess && dwRead > 0 ) {
+                        LPCSTR isFullBlock = (dwRead == BUFSIZE)? _T("Yes") : _T("No");
+                        std::cout << "Full block: " << std::string(isFullBlock) << std::endl;
+                    } else {
+                        // Failed to read a new block for further processing.
+                        // Should not happen unless metadata happens to be 
+                        // multiples of BUFSIZE.
+                        std::cout << "Last block already read. Failed to read next block." << std::endl;
+                    }
+#endif
+                    
+                    // bi will be automatically incremented at the end of this
+                    // loop. If we reset to bi = 0, chBuf[0] will be skipped
+                    // without being processed.
+                    bi = -1;
+                }
+            }
+            
+            if ( _tcslen( line ) == 0 )
+                break;
             
 #ifdef EXIF_TRACE
             OutputDebugString(_T(line));
-            //std::cout << std::string(line) << std::endl;
+            std::cout << std::string(line) << std::endl;
 #endif
 
             if (_tcscmp(line, "{ready}") == 0) break;
@@ -218,15 +276,17 @@ namespace ExifToolWrapper
                 int eq = _tcscspn(line, "=");
                 if (eq > 1)
                 {
-                    ZeroMemory( chBuf,  BUFSIZE );
-                    _tcsncpy( chBuf, &line[1], eq - 1 );
-                    std::string key(chBuf);
+                    TCHAR tkBuf[BUFSIZE];
                     
-                    ZeroMemory( chBuf,  BUFSIZE );
-                    _tcscpy( chBuf, &line[eq + 1] );
+                    ZeroMemory( tkBuf,  BUFSIZE );
+                    _tcsncpy( tkBuf, &line[1], eq - 1 );
+                    std::string key(tkBuf);
+                    
+                    ZeroMemory( tkBuf,  BUFSIZE );
+                    _tcscpy( tkBuf, &line[eq + 1] );
                     
                     // Trim
-                    std::string value(chBuf);
+                    std::string value(tkBuf);
                     /*
                     KeyValuePair<std::string, std::string> *kvp = 
                         new KeyValuePair<std::string, std::string>(key, value);
@@ -244,64 +304,85 @@ namespace ExifToolWrapper
         DWORD dwRead, dwWritten;
         BOOL bSuccess = FALSE;
         TCHAR chBuf[BUFSIZE];
-        
+
+#ifdef EXIF_TRACE
         std::cout << "hProcess: " << m_exifTool.hProcess << std::endl;
+#endif
+
         if (m_exifTool.hProcess != NULL)
         {
+#ifdef EXIF_TRACE
             if (!disposing)
             {
                 OutputDebugString(_T("Failed to dispose ExifTool."));
                 std::cout << "Called from destructor!" << std::endl;
             }
+#endif
         
             // If process is running, shut it down cleanly
             DWORD dwExitCode;
             
             bSuccess = GetExitCodeProcess( m_exifTool.hProcess, &dwExitCode );
+#ifdef EXIF_TRACE
             std::cout << "GetExitCodeProcess: " << bSuccess << ", Exit Code: " << dwExitCode << std::endl;
+#endif
             if ( bSuccess && dwExitCode == STILL_ACTIVE )
             {
+#ifdef EXIF_TRACE
                 std::cout << "exiftool is STILL ACTIVE" << std::endl;
+#endif
                 
                 dwRead = _tcslen(c_exitCommand) * sizeof(TCHAR);
                 bSuccess = WriteFile(m_in, c_exitCommand, dwRead, &dwWritten, NULL);
                 if ( ! bSuccess ) return;
                 
                 FlushFileBuffers(m_in);
-                
+#ifdef EXIF_TRACE
                 std::cout << "Waiting for exit..." << std::endl;
+#endif
                 
                 dwExitCode = WaitForSingleObject( m_exifTool.hProcess, c_exitTimeout );
-                
+#ifdef EXIF_TRACE
                 std::cout << "exiftool process has exited." << std::endl;
+#endif
                 
                 if (dwExitCode == WAIT_TIMEOUT)
                 {
                     bSuccess = TerminateProcess( m_exifTool.hProcess, 0 );
+#ifdef EXIF_TRACE
                     OutputDebugString(_T("Timed out waiting for exiftool to exit."));
                     std::cout << "WAIT_TIMEOUT: " << bSuccess << std::endl;
+#endif
                 }
                 else if (dwExitCode == WAIT_FAILED)
                 {
+#ifdef EXIF_TRACE
                     OutputDebugString(_T("ExifTool terminate wait failed."));
                     std::cout << "WAIT_FAILED" << std::endl;
+#endif
                 }
                 else if (dwExitCode == WAIT_ABANDONED)
                 {
+#ifdef EXIF_TRACE
                     OutputDebugString(_T("ExifTool terminate wait abandoned."));
                     std::cout << "WAIT_ABANDONED" << std::endl;
+#endif
                 }
                 #ifdef EXIF_TRACE
                 else if (dwExitCode == WAIT_OBJECT_0)
                 {
+#ifdef EXIF_TRACE
                     OutputDebugString(_T("ExifTool exited cleanly."));
                     std::cout << "WAIT_OBJECT_0" << std::endl;
+#endif
                 }
                 #endif
                 else
                 {
+#ifdef EXIF_TRACE
                     OutputDebugString(_T("ExifTool terminate unknown status."));
                     std::cout << "WAIT_UNKNOWN" << std::endl;
+#endif
                 }
             } else {
                 DWORD err = GetLastError();
@@ -314,26 +395,34 @@ namespace ExifToolWrapper
             {
                 CloseHandle(m_out);
                 m_out = NULL;
+#ifdef EXIF_TRACE
                 std::cout << "Closed m_out" << std::endl;
+#endif
             }
             if (m_in != NULL)
             {
                 CloseHandle(m_in);
                 m_in = NULL;
+#ifdef EXIF_TRACE
                 std::cout << "Closed m_in" << std::endl;
+#endif
             }
             
             CloseHandle( m_exifTool.hProcess );
             CloseHandle( m_exifTool.hThread );
             
             ZeroMemory( &m_exifTool, sizeof(PROCESS_INFORMATION) );
+#ifdef EXIF_TRACE
             std::cout << "After ZeroMemory( m_exifTool )" << std::endl;
+#endif
         }
     }
     
     ExifTool::~ExifTool()
     {
+#ifdef EXIF_TRACE
         std::cout << "~ExifTool()" << std::endl;
+#endif
         // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         Dispose(false);
     }
@@ -341,7 +430,9 @@ namespace ExifToolWrapper
     // This code added to correctly implement the disposable pattern.
     void ExifTool::Dispose()
     {
+#ifdef EXIF_TRACE
         std::cout << "Dispose()" << std::endl;
+#endif
         // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         Dispose(true);
         // No garbage collector in C++
@@ -380,9 +471,11 @@ namespace ExifToolWrapper
         TCHAR *t = (TCHAR*) malloc(len);
         memset(t, 0, len);
         _tcsncpy(t, &s[l], end - start + 1);
-        
+
+#ifdef EXIF_TRACE
         _tprintf(" IN: %s (%d)\n", s, _tcslen(s));
         _tprintf("OUT: %s (%d)\n", t, _tcslen(t));
+#endif
         
         const int DECIMAL = 10;
         TCHAR *endptr;
@@ -467,7 +560,9 @@ int main(int argc, char *argv[])
     try
     {
         ExifToolWrapper::ExifTool exifTool;
+#ifdef EXIF_TRACE
         std::cout << _T("main()") << std::endl;
+#endif
         
         //TestParsing();
         TestGetProperties( exifTool );
@@ -498,7 +593,9 @@ int main(int argc, char *argv[])
         
         exitCode = exception;
     }
-    
+#ifdef EXIF_TRACE    
+    system("PAUSE");
+#endif    
     return exitCode;
 }
 
