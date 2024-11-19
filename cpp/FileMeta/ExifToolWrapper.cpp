@@ -215,23 +215,14 @@ namespace ExifToolWrapper
             ZeroMemory( line,  BUFSIZE );
             for (int li = 0; li < BUFSIZE && bi < dwRead; li++, bi++)
             {
-                if ( chBuf[bi] == '\0' ) {
-                    line[li] = '\0';
-                    ++bi;
-                    break;
-                } else if( chBuf[bi] == '\n' ){                    
-                    // Exit without filling up the entire line buffer.
-                    line[li] = 0;
-                    ++bi;
-                    break;
-                } else if( chBuf[bi] == '\r' ) {
-                    // Newline in Windows has 2 characters \r\n, unlike 
-                    // Unix/Linux. So we need to replace with a null terminator 
-                    // to ensure string functions work properly.
-                    line[li] = 0;
-                } else {
-                    // Copy any other characters to line buffer.
+                if ( chBuf[bi] != '\0' && 
+                    chBuf[bi] != '\n' && 
+                    chBuf[bi] != '\r' ) {
                     line[li] = chBuf[bi];
+                } else if( chBuf[bi] == '\n' ){
+                    // Exit line splitting loop and let line be parsed/processed.
+                    ++bi;
+                    break;
                 }
                 
                 // Have we reached the last byte/character of block?
@@ -240,10 +231,13 @@ namespace ExifToolWrapper
                     // Read next block
                     ZeroMemory( chBuf, BUFSIZE );
                     bSuccess = ReadFile( m_out, chBuf, BUFSIZE, &dwRead, NULL );
+                    if ( !bSuccess || dwRead == 0 ) {
+                        line[li+1] = 0;
+                        break;
+                    }
 #ifdef EXIF_TRACE
                     std::cout << "--- Next block: dwRead = " << dwRead << std::endl;
                     
-                    // once a new block has been read, reset block index.
                     if ( bSuccess && dwRead > 0 ) {
                         LPCSTR isFullBlock = (dwRead == BUFSIZE)? _T("Yes") : _T("No");
                         std::cout << "Full block: " << std::string(isFullBlock) << std::endl;
@@ -253,8 +247,8 @@ namespace ExifToolWrapper
                         // multiples of BUFSIZE.
                         std::cout << "Last block already read. Failed to read next block." << std::endl;
                     }
-#endif
-                    
+#endif                    
+                    // once a new block has been read, reset block index.
                     // bi will be automatically incremented at the end of this
                     // loop. If we reset to bi = 0, chBuf[0] will be skipped
                     // without being processed.
