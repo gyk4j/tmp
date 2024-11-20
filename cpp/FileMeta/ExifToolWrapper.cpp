@@ -156,15 +156,15 @@ namespace ExifToolWrapper
         CloseHandle( hInRd );
     }
     
-    void ExifTool::GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > &propsRead) const
+    void ExifTool::GetProperties(const std::string filename, std::map<std::string, std::string> &propsRead) const
     {
         DWORD dwRead = 0, dwWritten = 0;
         BOOL bSuccess = FALSE;
         TCHAR chBuf[BUFSIZE];
         HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
         
-        dwRead = _tcslen(filename) * sizeof(TCHAR);
-        bSuccess = WriteFile(m_in, filename, dwRead, &dwWritten, NULL);
+        dwRead = filename.length() * sizeof(TCHAR);
+        bSuccess = WriteFile(m_in, filename.c_str(), dwRead, &dwWritten, NULL);
         if ( ! bSuccess ) return;
         
         FlushFileBuffers(m_in);
@@ -176,7 +176,7 @@ namespace ExifToolWrapper
         FlushFileBuffers(m_in);
             
 #ifdef EXIF_TRACE
-        OutputDebugString(_T(filename));
+        OutputDebugString(filename.c_str());
         OutputDebugString(_T("-execute"));
 #endif
         // Close the pipe handle so the child process stops reading.
@@ -285,9 +285,12 @@ namespace ExifToolWrapper
                     KeyValuePair<std::string, std::string> *kvp = 
                         new KeyValuePair<std::string, std::string>(key, value);
                     propsRead.push_back(*kvp);
-                    */
+                    
                     KeyValuePair<std::string, std::string> kvp(key, value);
                     propsRead.push_back(kvp);
+                    */
+                    
+                    propsRead[key] = value;
                 }
             }
         }

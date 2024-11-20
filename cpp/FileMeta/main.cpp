@@ -3,7 +3,7 @@
 
 void TestParsing();
 void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool );
-void DumpProps( const std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > &props );
+void DumpProps( const std::map<std::string, std::string> &props );
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +64,7 @@ void TestParsing()
 
 void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool )
 {
-    std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > props;
+    std::map<std::string, std::string> props;
 
     exifTool.GetProperties( _T("Canon_40D.jpg"), props );
     DumpProps( props );
@@ -76,13 +76,16 @@ void TestGetProperties( const ExifToolWrapper::ExifTool &exifTool )
 
 }
 
-void DumpProps( const std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> > &props )
+void DumpProps( const std::map<std::string, std::string> &props )
 {
-    for (
-        std::vector< ExifToolWrapper::KeyValuePair<std::string, std::string> >::const_iterator it = props.begin();
-        it != props.end() ;
-        ++it) {
-
+    std::map<std::string, std::string>::const_iterator it = props.begin();
+    
+    while( it != props.end() )
+    {
+        /* If using ExifToolWrapper::KeyValuePair
         std::cout << it->Key << " = " << it->Value << std::endl;
+        */
+        std::cout << it->first << " = " << it->second << std::endl;
+        it++;
     }
 }
