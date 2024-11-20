@@ -16,12 +16,16 @@ endif
 
 MUNICODE = #-municode
 
-$(PROG).exe : $(PROG).o
+$(PROG).exe : main.o ExifToolWrapper.o
 	$(CXX) -o $@ $(SUBSYSTEM) $(MUNICODE) -Os -s $^ $(LIBS)
+	
+main.o: main.cpp
+	$(CXX) -c $(CXXFLAGS) $<
 
-$(PROG).o : $(PROG).cpp $(PROG).h
+ExifToolWrapper.o : ExifToolWrapper.cpp ExifToolWrapper.h
 	$(CXX) -c $(CXXFLAGS) $<
 	
 clean:
 	del $(PROG).exe
 	del $(PROG).o
+	del main.o
