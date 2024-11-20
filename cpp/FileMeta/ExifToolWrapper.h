@@ -54,6 +54,18 @@ For more information, please refer to <http://unlicense.org/>
 #define SET_HANDLE_INFORMATION_ERROR    -11
 #define CLOSE_HANDLE_ERROR              -12
 
+namespace DateTimeKind
+{
+    enum DateTimeKind
+    {
+        Unspecified,
+        Utc,
+        Local
+    };
+    
+    typedef enum DateTimeKind DateTimeKind;
+}
+
 namespace ExifToolWrapper
 {
     /*
@@ -76,15 +88,6 @@ namespace ExifToolWrapper
     };
     */
     
-    enum DateTimeKind
-    {
-        Unspecified,
-        Utc,
-        Local
-    };
-
-    typedef enum DateTimeKind DateTimeKind;
-    
     class ExifTool
     {
         public:
@@ -92,7 +95,7 @@ namespace ExifToolWrapper
             ~ExifTool();
             void Dispose();
             void GetProperties(const std::string filename, std::map<std::string, std::string> &propsRead) const;
-            static BOOL TryParseDate(const std::string s, const DateTimeKind kind, const LPSYSTEMTIME date);
+            static BOOL TryParseDate(const std::string s, const DateTimeKind::DateTimeKind kind, const LPSYSTEMTIME date);
             
         protected:
             void Dispose(bool disposing);
