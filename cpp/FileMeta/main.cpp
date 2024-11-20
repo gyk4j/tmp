@@ -59,7 +59,7 @@ void TestParsing()
     
     ok = ExifToolWrapper::ExifTool::TryParseDate(
         test,
-        ExifToolWrapper::DateTimeKind::Utc,
+        DateTimeKind::Utc,
         &date
     );
 
@@ -71,7 +71,7 @@ void TestParsing()
         
     ok = ExifToolWrapper::ExifTool::TryParseDate(
         test,
-        ExifToolWrapper::DateTimeKind::Local,
+        DateTimeKind::Local,
         &date
     );
 
@@ -83,7 +83,7 @@ void TestParsing()
 
     ok = ExifToolWrapper::ExifTool::TryParseDate(
         test,
-        ExifToolWrapper::DateTimeKind::Unspecified,
+        DateTimeKind::Unspecified,
         &date
     );
     
