@@ -94,6 +94,7 @@ namespace ExifToolWrapper
             static const TCHAR* c_exitCommand;
             static const int c_timeout;    // in milliseconds
             static const int c_exitTimeout;
+            static const UINT s_Utf8NoBOM;
                         
             PROCESS_INFORMATION m_exifTool;
             HANDLE m_in;
