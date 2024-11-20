@@ -73,7 +73,7 @@ namespace ExifToolWrapper
         public:            
             ExifTool();
             ~ExifTool();
-            void ExifTool::Dispose();
+            void Dispose();
             void GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > &propsRead) const;            
             static bool TryParseDate(const TCHAR *s, const LPSYSTEMTIME date);
             
