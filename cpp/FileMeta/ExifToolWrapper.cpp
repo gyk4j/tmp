@@ -47,11 +47,11 @@ For more information, please refer to <http://unlicense.org/>
 
 namespace ExifToolWrapper
 {
-    const TCHAR* ExifTool::c_exeName = "exiftool.exe";
-    const TCHAR* ExifTool::c_arguments = "-stay_open 1 -@ - -common_args -charset UTF8 -G1 -args";
-    const TCHAR* ExifTool::c_exitCommand = "-stay_open\n0\n-execute\n";
-    const int ExifTool::c_timeout = 30000;    // in milliseconds
-    const int ExifTool::c_exitTimeout = 15000;
+    LPCTSTR ExifTool::c_exeName = _T("exiftool.exe");
+    LPCTSTR ExifTool::c_arguments = _T("-stay_open 1 -@ - -common_args -charset UTF8 -G1 -args");
+    LPCTSTR ExifTool::c_exitCommand = _T("-stay_open\n0\n-execute\n");
+    const DWORD ExifTool::c_timeout = 30000;    // in milliseconds
+    const DWORD ExifTool::c_exitTimeout = 15000;
     
     // Reference: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
     const UINT ExifTool::s_Utf8NoBOM = 65001;
@@ -151,7 +151,7 @@ namespace ExifToolWrapper
             // CreateProcess does not return a Process object like in .NET.
             // Closest equivalence is the PROCESS_INFORMATION struct.
             ZeroMemory( &m_exifTool, sizeof(PROCESS_INFORMATION) );
-            memcpy( &m_exifTool, &piProcInfo, sizeof(PROCESS_INFORMATION) );
+            CopyMemory( &m_exifTool, &piProcInfo, sizeof(PROCESS_INFORMATION) );
         }
         
         // Close handles to the child process and its primary thread.
@@ -444,7 +444,7 @@ namespace ExifToolWrapper
         // No garbage collector in C++
     }
     
-    bool ExifTool::TryParseDate(const TCHAR *s, const LPSYSTEMTIME date)
+    BOOL ExifTool::TryParseDate(const LPTSTR s, const LPSYSTEMTIME date)
     {
         date->wDayOfWeek = 2; // Tues for Jan 1, 1980
         date->wYear = 1980;
@@ -473,9 +473,9 @@ namespace ExifToolWrapper
             }
         }
         
-        size_t len = _tcslen(s) * sizeof(TCHAR);
-        TCHAR *t = (TCHAR*) malloc(len);
-        memset(t, 0, len);
+        size_t len = _tcslen(s);
+        LPTSTR t = new TCHAR[len];
+        ZeroMemory(t, len);
         _tcsncpy(t, &s[l], end - start + 1);
 
 #ifdef EXIF_TRACE
@@ -484,7 +484,7 @@ namespace ExifToolWrapper
 #endif
         
         const int DECIMAL = 10;
-        TCHAR *endptr;
+        LPTSTR endptr;
         
         endptr = &t[4];
         year = _tcstol(&t[0], &endptr, DECIMAL);
@@ -529,7 +529,7 @@ namespace ExifToolWrapper
         date->wMinute = minute;
         date->wSecond = second;
         
-        free(t);
+        delete[] t;
         t = NULL;
         
         return true;

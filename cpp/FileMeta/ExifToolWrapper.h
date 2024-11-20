@@ -83,17 +83,17 @@ namespace ExifToolWrapper
             ~ExifTool();
             void Dispose();
             void GetProperties(const std::string filename, std::map<std::string, std::string> &propsRead) const;
-            static bool TryParseDate(const TCHAR *s, const LPSYSTEMTIME date);
+            static BOOL TryParseDate(const LPTSTR s, const LPSYSTEMTIME date);
             
         protected:
             void Dispose(bool disposing);
             
         private:
-            static const TCHAR* c_exeName;
-            static const TCHAR* c_arguments;
-            static const TCHAR* c_exitCommand;
-            static const int c_timeout;    // in milliseconds
-            static const int c_exitTimeout;
+            static LPCTSTR c_exeName;
+            static LPCTSTR c_arguments;
+            static LPCTSTR c_exitCommand;
+            static const DWORD c_timeout;    // in milliseconds
+            static const DWORD c_exitTimeout;
             static const UINT s_Utf8NoBOM;
                         
             PROCESS_INFORMATION m_exifTool;
