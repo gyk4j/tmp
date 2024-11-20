@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
         std::cout << _T("main()") << std::endl;
 #endif
 
-        //TestParsing();
-        TestGetProperties( exifTool );
+        TestParsing();
+        //TestGetProperties( exifTool );
 
         exifTool.Dispose();
     } catch(int exception) {
@@ -54,7 +54,10 @@ int main(int argc, char *argv[])
 void TestParsing()
 {
     SYSTEMTIME date;
-    bool ok = ExifToolWrapper::ExifTool::TryParseDate(_T("   1819:08:09 12:34:56    "), &date);
+    bool ok = ExifToolWrapper::ExifTool::TryParseDate(
+        std::string("   2019:08:09 12:34:569    "),
+        &date
+    );
 
     _tprintf(_T("Status: %s\n"), (ok)? _T("OK"): _T("Error"));
     _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d\n",

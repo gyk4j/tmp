@@ -444,10 +444,17 @@ namespace ExifToolWrapper
         // No garbage collector in C++
     }
     
-    BOOL ExifTool::TryParseDate(const LPTSTR s, const LPSYSTEMTIME date)
+    BOOL ExifTool::TryParseDate(const std::string s, const LPSYSTEMTIME date)
     {
-        date->wDayOfWeek = 2; // Tues for Jan 1, 1980
-        date->wYear = 1980;
+        // Need to make a writable copy.
+        LPCTSTR ro = s.c_str();
+        int lro = _tcslen(ro) + 1;
+        LPTSTR ts = new TCHAR[lro];
+        ZeroMemory( ts, lro );
+        _tcsncpy( ts, ro, lro );
+        
+        date->wDayOfWeek = 1; // Mon for Jan 1, 1900
+        date->wYear = 1900;
         date->wMonth = 1;
         date->wDay = 1;
         date->wHour = 0;
@@ -459,60 +466,85 @@ namespace ExifToolWrapper
         
         // Trim s
         int l, r, start, end;
-        for(l=0 * sizeof(TCHAR); l < _tcslen(s); l += sizeof(TCHAR)){
-            if (!isspace(s[l])){
+        for(l=0 * sizeof(TCHAR); l < _tcslen(ts); l += sizeof(TCHAR)){
+            if (!isspace(ts[l])){
                 start = l;
                 break;
             }
         }
         
-        for(r=_tcslen(s)-sizeof(TCHAR); r >= 0; r -= sizeof(TCHAR)){
-            if (!isspace(s[r])){
+        for(r=_tcslen(ts)-sizeof(TCHAR); r >= 0; r -= sizeof(TCHAR)){
+            if (!isspace(ts[r])){
                 end = r;
                 break;
             }
         }
         
-        size_t len = _tcslen(s);
+        size_t len = _tcslen(ts) + 1;
         LPTSTR t = new TCHAR[len];
         ZeroMemory(t, len);
-        _tcsncpy(t, &s[l], end - start + 1);
+        _tcsncpy(t, &ts[l], end - start + 1);
 
 #ifdef EXIF_TRACE
-        _tprintf(" IN: %s (%d)\n", s, _tcslen(s));
+        _tprintf(" IN: %s (%d)\n", ts, _tcslen(ts));
         _tprintf("OUT: %s (%d)\n", t, _tcslen(t));
 #endif
         
         const int DECIMAL = 10;
-        LPTSTR endptr;
+        const int TOKEN_LEN = 5;
+        TCHAR token[TOKEN_LEN];
         
-        endptr = &t[4];
-        year = _tcstol(&t[0], &endptr, DECIMAL);
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[0], 4 );
+        year = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "yyyy: %d\n", year );
+#endif
         if (year == 0) return false;
         if (t[4] != ':') return false;
-        
-        endptr = &t[7];
-        month = _tcstol(&t[5], &endptr, DECIMAL);
+
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[5], 2 );
+        month = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "MM: %d\n", month );
+#endif
         if (month == 0) return false;
         if (t[7] != ':') return false;
         
-        endptr = &t[10];
-        day = _tcstol(&t[8], &endptr, DECIMAL);
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[8], 2 );
+        day = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "dd: %d\n", day );
+#endif
         if (day == 0) return false;
         if (t[10] != ' ') return false;
         
-        endptr = &t[13];
-        hour = _tcstol(&t[11], &endptr, DECIMAL);
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[11], 2 );
+        hour = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "HH: %d\n", hour );
+#endif
         //if (hour == 0) return false;
         if (t[13] != ':') return false;
         
-        endptr = &t[16];
-        minute = _tcstol(&t[14], &endptr, DECIMAL);
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[14], 2 );
+        minute = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "mm: %d\n", minute );
+#endif
         //if (minute == 0) return false;
         if (t[16] != ':') return false;
         
-        endptr = &t[19];
-        second = _tcstol(&t[17], &endptr, DECIMAL);
+        ZeroMemory( token, TOKEN_LEN );
+        _tcsncpy( token, &t[17], 2 );
+        second = _tcstol( token, NULL, DECIMAL );
+#ifdef EXIF_TRACE
+        _tprintf( "ss: %d\n", second );
+#endif
         //if (second == 0) return false;
         
         if (year < 1900 || year > 2200) return false;
@@ -531,6 +563,9 @@ namespace ExifToolWrapper
         
         delete[] t;
         t = NULL;
+        
+        delete[] ts;
+        ts = NULL;
         
         return true;
     }
