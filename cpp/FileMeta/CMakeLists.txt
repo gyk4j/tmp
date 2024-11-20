@@ -24,6 +24,7 @@ set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${SUBSYSTEM} ${MUNICODE} 
 
 add_executable(${PROJECT_NAME}
 	${PROJECT_NAME}.cpp ${PROJECT_NAME}.h
+	main.cpp
 )
 
 # target_link_libraries(${PROJECT_NAME})
