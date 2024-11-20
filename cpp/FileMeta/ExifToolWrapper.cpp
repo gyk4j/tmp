@@ -444,7 +444,7 @@ namespace ExifToolWrapper
         // No garbage collector in C++
     }
     
-    BOOL ExifTool::TryParseDate(const std::string s, const LPSYSTEMTIME date)
+    BOOL ExifTool::TryParseDate(const std::string s, const DateTimeKind kind, const LPSYSTEMTIME date)
     {
         // Need to make a writable copy.
         LPCTSTR ro = s.c_str();
@@ -560,6 +560,42 @@ namespace ExifToolWrapper
         date->wHour = hour;
         date->wMinute = minute;
         date->wSecond = second;
+        
+        switch (kind)
+        {
+            case Unspecified:
+                // Skip any time conversion.
+                break;
+            case Utc:
+                SYSTEMTIME local;
+                if ( SystemTimeToTzSpecificLocalTime(
+                    NULL,   // lpTimeZoneInformation. Use currently active time zone.
+                    date,   // lpUniversalTime
+                    &local  // lpLocalTime
+                ) )
+                {
+                    CopyMemory( date, &local, sizeof(SYSTEMTIME) );
+                } else {
+                    std::cerr << "WARN: Local time conversion failed." << std::endl;
+                }
+                break;
+            case Local:
+                SYSTEMTIME utc;
+                if ( TzSpecificLocalTimeToSystemTime(
+                    NULL,   // lpTimeZoneInformation. Use currently active time zone.
+                    date,   // lpLocalTime
+                    &utc    // lpUniversalTime
+                ) )
+                {
+                    CopyMemory( date, &utc, sizeof(SYSTEMTIME) );
+                } else {
+                    std::cerr << "WARN: Local time conversion failed." << std::endl;
+                }
+                break;
+            default:
+                // Skip any time conversion.
+                break;
+        }
         
         delete[] t;
         t = NULL;

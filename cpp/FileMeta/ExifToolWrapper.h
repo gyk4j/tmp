@@ -76,6 +76,15 @@ namespace ExifToolWrapper
     };
     */
     
+    enum DateTimeKind
+    {
+        Unspecified,
+        Utc,
+        Local
+    };
+
+    typedef enum DateTimeKind DateTimeKind;
+    
     class ExifTool
     {
         public:
@@ -83,7 +92,7 @@ namespace ExifToolWrapper
             ~ExifTool();
             void Dispose();
             void GetProperties(const std::string filename, std::map<std::string, std::string> &propsRead) const;
-            static BOOL TryParseDate(const std::string s, const LPSYSTEMTIME date);
+            static BOOL TryParseDate(const std::string s, const DateTimeKind kind, const LPSYSTEMTIME date);
             
         protected:
             void Dispose(bool disposing);
