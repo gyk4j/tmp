@@ -54,13 +54,42 @@ int main(int argc, char *argv[])
 void TestParsing()
 {
     SYSTEMTIME date;
-    bool ok = ExifToolWrapper::ExifTool::TryParseDate(
-        std::string("   2019:08:09 12:34:569    "),
+    std::string test("   2019:08:09 12:34:569    ");
+    BOOL ok = false;
+    
+    ok = ExifToolWrapper::ExifTool::TryParseDate(
+        test,
+        ExifToolWrapper::DateTimeKind::Utc,
         &date
     );
 
+    _tprintf(_T("--- UTC ---\n"));
     _tprintf(_T("Status: %s\n"), (ok)? _T("OK"): _T("Error"));
-    _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d\n",
+    _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d (Local)\n",
+        date.wYear, date.wMonth, date.wDay,
+        date.wHour, date.wMinute, date.wSecond);
+        
+    ok = ExifToolWrapper::ExifTool::TryParseDate(
+        test,
+        ExifToolWrapper::DateTimeKind::Local,
+        &date
+    );
+
+    _tprintf(_T("--- Local ---\n"));
+    _tprintf(_T("Status: %s\n"), (ok)? _T("OK"): _T("Error"));
+    _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d (UTC)\n",
+        date.wYear, date.wMonth, date.wDay,
+        date.wHour, date.wMinute, date.wSecond);
+
+    ok = ExifToolWrapper::ExifTool::TryParseDate(
+        test,
+        ExifToolWrapper::DateTimeKind::Unspecified,
+        &date
+    );
+    
+    _tprintf(_T("--- Unspecified ---\n"));
+    _tprintf(_T("Status: %s\n"), (ok)? _T("OK"): _T("Error"));
+    _tprintf("Date: %04d-%02d-%02d\nTime: %02d:%02d:%02d (Unspecified)\n",
         date.wYear, date.wMonth, date.wDay,
         date.wHour, date.wMinute, date.wSecond);
 }
