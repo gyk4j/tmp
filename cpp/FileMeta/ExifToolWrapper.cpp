@@ -53,7 +53,8 @@ namespace ExifToolWrapper
     const int ExifTool::c_timeout = 30000;    // in milliseconds
     const int ExifTool::c_exitTimeout = 15000;
     
-    //Encoding ExifTool::s_Utf8NoBOM = new UTF8Encoding(false);
+    // Reference: https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+    const UINT ExifTool::s_Utf8NoBOM = 65001;
     
     ExifTool::ExifTool()
     {
@@ -115,6 +116,16 @@ namespace ExifToolWrapper
         siStartInfo.hStdError = hOutWr;
         siStartInfo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
         siStartInfo.wShowWindow = SW_HIDE;
+        
+        // Set UTF-8 code page
+        if ( IsValidCodePage( s_Utf8NoBOM ) ) {
+            if ( SetConsoleCP( s_Utf8NoBOM ) == 0 )
+                std::cerr << "WARN: Failed to set UTF-8 input code page" << std::endl;
+            if ( SetConsoleOutputCP( s_Utf8NoBOM ) == 0 )
+                std::cerr << "WARN: Failed to set UTF-8 output code page" << std::endl;
+        } else {
+            std::cerr << "WARN: UTF-8 code page is unavailable?" << std::endl;
+        }
         
         // Create the child process.
         
@@ -215,9 +226,7 @@ namespace ExifToolWrapper
             ZeroMemory( line,  BUFSIZE );
             for (int li = 0; li < BUFSIZE && bi < dwRead; li++, bi++)
             {
-                if ( chBuf[bi] != '\0' && 
-                    chBuf[bi] != '\n' && 
-                    chBuf[bi] != '\r' ) {
+                if ( chBuf[bi] != '\n' && chBuf[bi] != '\r' ) {
                     line[li] = chBuf[bi];
                 } else if( chBuf[bi] == '\n' ){
                     // Exit line splitting loop and let line be parsed/processed.
