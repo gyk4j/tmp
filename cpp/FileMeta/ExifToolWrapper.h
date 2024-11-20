@@ -42,7 +42,7 @@ For more information, please refer to <http://unlicense.org/>
 #define _EXIFTOOL_WRAPPER_H
 
 #include <string>
-#include <vector>
+#include <map>
 #include <tchar.h>
 #include <windows.h>
 
@@ -56,6 +56,13 @@ For more information, please refer to <http://unlicense.org/>
 
 namespace ExifToolWrapper
 {
+    /*
+    Can be replaced by std::pair if needed.
+    Currently replaced by std::map.
+    
+    But the fields would be "first" and "second" instead of "Key" and "Value"
+    Created for emulating C#.NET API.
+    
     template <typename K, typename V>
     struct KeyValuePair {
         public:
@@ -67,6 +74,7 @@ namespace ExifToolWrapper
                 Value = v;
             }
     };
+    */
     
     class ExifTool
     {
@@ -74,7 +82,7 @@ namespace ExifToolWrapper
             ExifTool();
             ~ExifTool();
             void Dispose();
-            void GetProperties(const TCHAR *filename, std::vector< KeyValuePair<std::string, std::string> > &propsRead) const;            
+            void GetProperties(const std::string filename, std::map<std::string, std::string> &propsRead) const;
             static bool TryParseDate(const TCHAR *s, const LPSYSTEMTIME date);
             
         protected:
