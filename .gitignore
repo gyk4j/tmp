@@ -93,3 +93,6 @@ cpp/FileMeta/*.cs
 cpp/FileMeta/*.jpg
 cpp/FileMeta/exif-samples-master/
 cpp/FileMeta/build/
+
+cpp/utf8/*.o
+cpp/utf8/*.exe
