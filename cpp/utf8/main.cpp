@@ -25,20 +25,23 @@ std::string utf8_encode(const std::wstring &wstr);
 std::wstring utf8_decode(const std::string &str);
 
 /* Tests */
-void test_de();
-void test_ru();
-void test_zh();
-void test_jp();
+void test_utf8( const wchar_t* s );
 void test_c();
 
 int _tmain(int argc, _TCHAR *argv[])
 {
+    UINT uCodePage = save_code_page( UTF_8_CP );
+    
     _putts(_T("Windows console/terminal font must be set to a Unicode non-raster font like Consolas or Lucida Console."));
-    test_c();
-    test_de();
-    test_ru();
-    test_zh();
-    test_jp();
+    //test_c();
+    test_utf8( L"en: Some English text" );  // English
+    test_utf8( L"de: Ä ä Ü ü ß" ); 		// German
+    test_utf8( L"ru: Я Б Г Д Ж Й" ); 	// Russian
+    test_utf8( L"zh: 中文简体" ); 		// Chinese
+    test_utf8( L"jp: ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃ" ); 	// Japanese
+    test_utf8( L"ko: 투서로 뜨고 투서에 지나" );	// Korean
+    
+    restore_code_page( uCodePage );
 
     return 0;
 }
@@ -136,42 +139,41 @@ std::wstring utf8_decode(const std::string &str)
     return wstrTo;
 }
 
-void test_de()
+void test_utf8( const wchar_t* s )
 {
-    UINT uCodePage = save_code_page( UTF_8_CP );
-    wchar_t* de = L"Ä ä Ü ü ß";
-    puts( utf8_encode(de).c_str() );
-    restore_code_page( uCodePage );
-}
-
-void test_ru()
-{
-    UINT uCodePage = save_code_page( UTF_8_CP );
-    wchar_t* ru = L"Я Б Г Д Ж Й";
-    puts( utf8_encode(ru).c_str() );
-    restore_code_page( uCodePage );
-}
-
-void test_zh()
-{
-    UINT uCodePage = save_code_page( UTF_8_CP );
-    wchar_t* zh = L"中文简体";
-    puts( utf8_encode(zh).c_str() );
-    restore_code_page( uCodePage );
-}
-
-void test_jp()
-{
-    UINT uCodePage = save_code_page( UTF_8_CP );
-    wchar_t* jp = L"ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃ";
-    puts( utf8_encode(jp).c_str() );
-    restore_code_page( uCodePage );
+    /*
+    HANDLE hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
+    
+    if(hStdOut == INVALID_HANDLE_VALUE){
+        puts( "Error: invalid handle value" );
+        return;
+    }
+    
+    DWORD dwWritten;
+    
+    const char* ws = utf8_encode(s).c_str();
+    
+    WriteFile(
+        hStdOut,    // handle to the console screen buffer
+        ws,         // pointer to a buffer that contains characters to be written to the console screen buffer
+        strlen(ws), // number of characters to be written
+        &dwWritten, // pointer to a variable that receives the number of characters actually written
+        NULL        // Reserved; must be NULL
+    );
+    
+    WriteFile(
+        hStdOut,
+        L"\n",
+        wcslen(L"\n"),
+        &dwWritten,
+        NULL
+    );
+    */
+    puts( utf8_encode(s).c_str() );
 }
 
 void test_c()
-{
-    UINT uCodePage = save_code_page( UTF_8_CP );
-    
+{    
     FILE* fp = _tfopen( TEST_FILE, _T("rt") );
     
     if ( fp == NULL )
@@ -193,7 +195,5 @@ void test_c()
     }
     
     fclose( fp );
-    
-    restore_code_page( uCodePage );
 }
 
