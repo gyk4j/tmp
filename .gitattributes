@@ -3,6 +3,7 @@
 
 # Declare files that will always have LF line endings on checkout.
 *.sh text eol=lf
+*.m4 text eol=lf
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
